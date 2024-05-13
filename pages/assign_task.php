@@ -37,7 +37,7 @@ $task_row = task_row($row['task_id']);
         <div class="col-md-10 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title"><?= getUser($row['user_id']) ?></h4>
+                    <h1 class="card-title"><?= getUser($row['user_id']) ?></h1>
                     <p class="card-description" style="color: #464dee;">
                         Manage Files
                     </p>

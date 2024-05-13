@@ -7,10 +7,15 @@ define("view","pages/");
 
 /** Database connection **/
 
+// define("host","localhost");
+// define("username","root");
+// define("password","");
+// define("database","record_management_db");
+
 define("host","localhost");
-define("username","root");
-define("password","");
-define("database","record_management_db");
+define("username","u814036432_rm_root");
+define("password","recordManagement123!");
+define("database","u814036432_rm_db");
 /** Auth **/
 
 
