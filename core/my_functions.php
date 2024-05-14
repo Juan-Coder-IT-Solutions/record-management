@@ -46,3 +46,36 @@ function task_row($id)
 
 	return $row;
 }
+
+function total_task()
+{
+
+	global $mysqli_connect;
+
+	$fetchData = $mysqli_connect->query("SELECT count(task_id) FROM `tbl_tasks`");
+	$row = $fetchData->fetch_array();
+
+	return $row[0];
+}
+
+function total_user()
+{
+
+	global $mysqli_connect;
+
+	$fetchData = $mysqli_connect->query("SELECT count(user_id) FROM `tbl_users`");
+	$row = $fetchData->fetch_array();
+
+	return $row[0];
+}
+
+function total_program()
+{
+
+	global $mysqli_connect;
+
+	$fetchData = $mysqli_connect->query("SELECT count(program_id) FROM `tbl_programs`");
+	$row = $fetchData->fetch_array();
+
+	return $row[0];
+}

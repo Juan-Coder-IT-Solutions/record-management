@@ -4,6 +4,8 @@ include 'core/config.php';
 
 $page = (isset($_GET['page']) && $_GET['page'] != '') ? $_GET['page'] : '';
 checkLoginStatus();
+
+$user_id = $_SESSION['rm_user_id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,7 +84,7 @@ checkLoginStatus();
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="index.php?page=profile" class="nav-link">
                 <i class="mdi mdi-account-circle menu-icon"></i>
                 <span class="menu-title">Profile </span>
               </a>

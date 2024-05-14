@@ -9,6 +9,8 @@
 		require view.'tasks.php';
 	}else if($page == 'assign-task'){
 		require view.'assign_task.php';
+	}else if($page == 'profile'){
+		require view.'profile.php';
 	}else{
 		if(!empty($page) or $page != $page){
 			require view.'error.php';
