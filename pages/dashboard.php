@@ -1,3 +1,6 @@
+<?php
+$row = user_row($_SESSION['rm_user_id']);
+?>
 <div class="content-wrapper">
   <div class="row mt-4">
     <div class="col-sm-8 flex-column d-flex stretch-card">
@@ -38,6 +41,7 @@
           <h2 class="mt-3 text-white mb-3 font-weight-bold">
             Hi, <?= getUser($_SESSION['rm_user_id']) ?>!
           </h2>
+          <strong><?= program_name($row['program_id']) ?></strong>
           <p>
             Welcome back!
           </p>

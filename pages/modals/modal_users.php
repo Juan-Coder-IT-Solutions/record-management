@@ -45,7 +45,7 @@
             </div>
             <div class="col-sm-6">
               <div class="form-group">
-                <label>Program <strong style="color:red;">*</strong></label>
+                <label>Program</label>
                 <div>
                   <select class="select2 form-control form-control-lg" id="program_id" name="program_id" style="width: 100%;">
                     <option value="">Please Select</option>

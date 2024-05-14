@@ -2,10 +2,10 @@
 require_once '../../core/config.php';
 
 $assigned_task_id = $mysqli_connect->real_escape_string($_POST['assigned_task_id']);
-$fetch_products = $mysqli_connect->query("SELECT * FROM tbl_assigned_task_files WHERE assigned_task_id='$assigned_task_id'") or die(mysqli_error());
+$fetch = $mysqli_connect->query("SELECT * FROM tbl_assigned_task_files WHERE assigned_task_id='$assigned_task_id'") or die(mysqli_error());
 $response['data'] = array();
 $count = 1;
-while( $row = $fetch_products->fetch_array() ){
+while( $row = $fetch->fetch_array() ){
     
     $file = "task_files/".$row['file_name'];
 	$list = array(); 

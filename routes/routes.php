@@ -7,6 +7,8 @@
 		require view.'programs.php';
 	}else if($page == 'tasks'){
 		require view.'tasks.php';
+	}else if($page == 'list-tasks'){
+		require view.'list_tasks.php';
 	}else if($page == 'assign-task'){
 		require view.'assign_task.php';
 	}else if($page == 'profile'){

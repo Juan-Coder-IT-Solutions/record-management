@@ -3,6 +3,7 @@ $assigned_task_id = $_GET['id'];
 $fetch = $mysqli_connect->query("SELECT * FROM tbl_assigned_tasks WHERE assigned_task_id ='$assigned_task_id '") or die(mysqli_error());
 $row = $fetch->fetch_array();
 $task_row = task_row($row['task_id']);
+
 ?>
 <div class="content-wrapper">
     <div class="row">
@@ -11,18 +12,20 @@ $task_row = task_row($row['task_id']);
                 <div class="card-body">
                     <hr>
                     <form class="forms-sample">
-                        <div class="col-md-12">
-                            <button style="width: 100%;" type="button" onclick="uploadShow()" class="btn btn-primary btn-icon-text">
-                                <i class="mdi mdi-upload btn-icon-prepend"></i>
-                                Upload File
-                            </button>
-                        </div>
-                        <div class="col-md-12">
-                            <button onclick="deleteEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-danger btn-icon-text">
-                                <i class="mdi mdi-close-circle btn-icon-prepend"></i>
-                                Delete Entry
-                            </button>
-                        </div>
+                        <?php if ($row['user_id'] == $user_id) { ?>
+                            <div class="col-md-12">
+                                <button style="width: 100%;" type="button" onclick="uploadShow()" class="btn btn-primary btn-icon-text">
+                                    <i class="mdi mdi-upload btn-icon-prepend"></i>
+                                    Upload File
+                                </button>
+                            </div>
+                            <div class="col-md-12">
+                                <button onclick="deleteEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-danger btn-icon-text">
+                                    <i class="mdi mdi-close-circle btn-icon-prepend"></i>
+                                    Delete Entry
+                                </button>
+                            </div>
+                        <?php } ?>
                         <hr>
                         <h2 class="card-title" style="color:#0ddbb9;"><?= $task_row['task_title'] ?></h2>
                         <p>Description: <?= $task_row['task_desc']; ?></p>
@@ -30,6 +33,13 @@ $task_row = task_row($row['task_id']);
                         <p>Deadline: <?= $task_row['deadline_date'] ?></p>
                         <hr>
                     </form>
+                    <?php if ($task_row['user_id'] == $user_id) { ?>
+                        <textarea style="height: 150px;" class="form-control" id="comment" placeholder="Leave a comment here"><?= $row['comment'] ?></textarea>
+                        <br>
+                        <button class="btn btn-primary" onclick="submitComment(<?= $assigned_task_id ?>)" style="width: 100%;">Submit</button>
+                    <?php } else { ?>
+                        <textarea readonly style="height: 150px;" class="form-control" placeholder="No comment yet"><?= $row['comment'] ?></textarea>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -221,6 +231,28 @@ $task_row = task_row($row['task_id']);
         });
 
     });
+
+    function submitComment(id){
+        var comment = $("#comment").val();
+        $.ajax({
+            type: "POST",
+            url: "ajax/updateComment.php",
+            data: {
+                id:id,
+                comment:comment
+            },
+            success: function(data) {
+                if (data == 1) {
+                    success_add();
+                }else {
+                    failed_query("Assigned Task");
+                    alert(data);
+                }
+                $("#btn_submit_entry").prop("disabled", false);
+            }
+
+        });
+    }
 
     function getEntry() {
         var assigned_task_id = $("#assigned_task_id").val();
