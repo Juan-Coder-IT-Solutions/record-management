@@ -8,17 +8,29 @@
             Manage
           </p> -->
           <form class="forms-sample">
-            <div class="col-md-12">
-              <button style="width: 100%;" type="button" onclick="addEntry()" class="btn btn-primary btn-icon-text">
-                <i class="mdi mdi-plus-circle btn-icon-prepend"></i>
-                Add Entry
+            <!-- <div class="col-md-12">
+              <button type="button" style="width: 100%;" class="btn btn-outline-primary btn-icon-text">
+                <i class="mdi mdi-file-check btn-icon-prepend"></i>
+                ALL
               </button>
-            </div>
+              <hr>
+              <button type="button" style="width: 100%;" class="btn btn-outline-success btn-icon-text">
+                <i class="mdi mdi-calendar-check btn-icon-prepend"></i>
+                ON-TIME
+              </button>
+              <hr>
+              <button type="button" style="width: 100%;" class="btn btn-outline-warning btn-icon-text">
+                <i class="mdi mdi-calendar-remove btn-icon-prepend"></i>
+                LATE
+              </button>
+              <hr>
+              <button type="button" style="width: 100%;" class="btn btn-outline-danger btn-icon-text">
+                <i class="mdi mdi-close-circle-outline btn-icon-prepend"></i>
+                NO SUBMISSION
+              </button>
+            </div> -->
             <div class="col-md-12">
-              <!-- <button onclick="deleteEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-danger btn-icon-text">
-                <i class="mdi mdi-close-circle btn-icon-prepend"></i>
-                Delete Entry
-              </button> -->
+
             </div>
           </form>
         </div>
@@ -28,33 +40,13 @@
       <div class="card">
         <div class="card-body">
           <!-- <h4 class="card-title">Default form</h4> -->
-          <h4 class="card-title" style="color:#0ddbb9;">Users</h4>
+          <h4 class="card-title" style="color:#0ddbb9;">Report</h4>
           <p class="card-description" style="color: #464dee;">
-            Manage Users
+            Faculty Task Submission
           </p>
           <div class="col-lg-12">
             <div class="card mb-4">
-              <div class="table-responsive p-3">
-                <table class="table align-items-center table-flush table-hover" id="dt_details">
-                  <thead class="thead-light">
-                    <tr>
-                      <!-- <th>
-                        <div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' class='dt_id' class='form-check-input' onchange="checkAll(this,'dt_id')"><i class='input-helper'></i></label></div>
-                      </th> -->
-                      <th></th>
-                      <th>#</th>
-                      <th>Full Name</th>
-                      <th>User Category</th>
-                      <th>Program</th>
-                      <th>Designation</th>
-                      <th>Academic Rank</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                </table>
-              </div>
+              
             </div>
           </div>
         </div>

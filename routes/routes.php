@@ -13,6 +13,8 @@
 		require view.'assign_task.php';
 	}else if($page == 'profile'){
 		require view.'profile.php';
+	}else if($page == 'faculty-task-report'){
+		require view.'faculty_task_report.php';
 	}else{
 		if(!empty($page) or $page != $page){
 			require view.'error.php';

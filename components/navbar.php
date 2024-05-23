@@ -41,6 +41,22 @@
                 <span class="menu-title">Users</span>
               </a>
             </li>
+            <?php
+            if($_SESSION['user_category'] != "F" AND $_SESSION['user_category'] != "S"){
+            ?>
+            <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="mdi mdi-chart-pie menu-icon"></i>
+                    <span class="menu-title">Report</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+                  <div class="submenu">
+                      <ul>
+                          <li class="nav-item"><a class="nav-link" href="index.php?page=faculty-task-report">Faculty Task Submission</a></li>
+                      </ul>
+                  </div>
+              </li>
+            <?php } ?>
             <li class="nav-item <?= ($page == "profile"? "active":"") ?>">
               <a href="index.php?page=profile" class="nav-link">
                 <i class="mdi mdi-account-circle menu-icon"></i>
