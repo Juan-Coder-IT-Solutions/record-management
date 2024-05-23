@@ -3,34 +3,9 @@
     <div class="col-md-2 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <!-- <h4 class="card-title">Default form</h4> -->
-          <!-- <p class="card-description">
-            Manage
-          </p> -->
           <form class="forms-sample">
-            <!-- <div class="col-md-12">
-              <button type="button" style="width: 100%;" class="btn btn-outline-primary btn-icon-text">
-                <i class="mdi mdi-file-check btn-icon-prepend"></i>
-                ALL
-              </button>
-              <hr>
-              <button type="button" style="width: 100%;" class="btn btn-outline-success btn-icon-text">
-                <i class="mdi mdi-calendar-check btn-icon-prepend"></i>
-                ON-TIME
-              </button>
-              <hr>
-              <button type="button" style="width: 100%;" class="btn btn-outline-warning btn-icon-text">
-                <i class="mdi mdi-calendar-remove btn-icon-prepend"></i>
-                LATE
-              </button>
-              <hr>
-              <button type="button" style="width: 100%;" class="btn btn-outline-danger btn-icon-text">
-                <i class="mdi mdi-close-circle-outline btn-icon-prepend"></i>
-                NO SUBMISSION
-              </button>
-            </div> -->
             <div class="col-md-12">
-
+              <ul class="nav nav-pills nav-justified" id="nav_task_list"></ul>
             </div>
           </form>
         </div>
@@ -45,8 +20,39 @@
             Faculty Task Submission
           </p>
           <div class="col-lg-12">
+              <div class="form-group col-lg-4">
+                <label><strong>Type:</strong></label>
+                <div>
+                  <select class="select2 form-control form-control-lg" id="task_status" onchange="getEntry()">
+                    <option value="A">All</option>
+                    <option value="OT">On-time</option>
+                    <option value="LS">Late submit</option>
+                    <option value="NS">No submission</option>
+                  </select>
+                </div>
+              </div>
+          </div>
+
+          <div class="col-lg-12">
             <div class="card mb-4">
-              
+              <div class="table-responsive p-3">
+              <table class="table align-items-center table-flush table-hover" id="dt_details">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>#</th>
+                      <th>Task Title</th>
+                      <th>Faculty</th>
+                      <th>Description</th>
+                      <th>File Name</th>
+                      <th>Submission Date</th>
+                      <th>Posted Date</th>
+                      <th>Deadline Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -54,182 +60,78 @@
     </div>
   </div>
 </div>
-
-<?php require_once 'modals/modal_users.php'; ?>
+<input type="hidden" id="nav_task_id">
 <script>
   $(document).ready(function() {
     getEntry();
+    getTaskList();
   });
 
-  function deleteEntry() {
-    var count_checked = $(".dt_id:checked").length;
-    var tb = "tbl_users";
-    var keyword = "user_id";
-
-    if (count_checked > 0) {
-      swal({
-          title: "Are you sure?",
-          text: "You will not be able to recover these entries!",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "Yes, delete it!",
-          cancelButtonText: "No, cancel!",
-          closeOnConfirm: false,
-          closeOnCancel: false
-        },
-        function(isConfirm) {
-          if (isConfirm) {
-            var checkedValues = $(".dt_id:checked").map(function() { // Corrected checkbox value retrieval
-              return $(this).val();
-            }).get();
-
-            console.log("sample", checkedValues);
-            $("#btn_delete").prop('disabled', true);
-
-            $.ajax({
-              type: "POST",
-              url: "ajax/deleteBulkEntries.php",
-              data: {
-                id: checkedValues,
-                tb: tb,
-                keyword: keyword
-              },
-              success: function(data) {
-                if (data == 1) {
-                  success_delete();
-                  getEntry();
-                } else {
-                  failed_query("Programs");
-                }
-
-                $("#btn_delete").prop('disabled', false);
-              }
-            });
-
-          } else {
-            swal("Cancelled", "Entries are safe :)", "error");
-          }
-        });
-    } else {
-      swal("Cannot proceed!", "Please select entries to delete!", "warning");
-    }
+  function updateNavTaskID(nav_task_id){
+    $("#nav_task_id").val("");
+    $("#nav_task_id").val(nav_task_id);
+    getTaskList();
+    getEntry();
   }
 
-  function getEntryDetails(id) {
-    $("#modal_entry").modal("show");
-    var tb = "tbl_users";
-    var keyword = "user_id";
-
+  function getTaskList(){
+    var nav_task_id = $("#nav_task_id").val();
     $.ajax({
       type: "POST",
-      url: "ajax/getDetails.php",
+      url: "ajax/getTaskList.php",
       data: {
-        id: id,
-        tb: tb,
-        keyword: keyword
+        nav_task_id: nav_task_id
       },
       success: function(data) {
-        var json = JSON.parse(data);
-        console.log(data);
-        $("#first_name").val(json.first_name);
-        $("#middle_name").val(json.middle_name);
-        $("#last_name").val(json.last_name);
-        $("#user_category").val(json.user_category);
-        $("#username").val(json.username);
-        $("#program_id").val(json.program_id);
-        $("#designation").val(json.designation);
-        $("#academic_rank").val(json.academic_rank);
-        $("#password").val(json.password);
-        $("#user_id").val(json.user_id);
-        $(".modal_type").val("update");
-        $("#div_password").hide();
+        $("#nav_task_list").html(data);
       }
     });
   }
 
-
-
-  $("#frm_add").submit(function(e) {
-    e.preventDefault();
-    $("#btn_submit_entry").prop("disabled", true);
-    var type = $(".modal_type").val();
-    $.ajax({
-      type: "POST",
-      url: "ajax/manageUser.php",
-      data: $("#frm_add").serialize(),
-      success: function(data) {
-        if (data == 1) {
-          if (type == "add") {
-            success_add();
-            $('#frm_add').each(function() {
-              this.reset();
-            });
-          } else {
-            success_update();
-          }
-          getEntry();
-          $("#modal_entry").modal("hide");
-        } else if (data == 2) {
-          entry_already_exists();
-        } else {
-          failed_query("Programs");
-          alert(data);
-        }
-        $("#btn_submit_entry").prop("disabled", false);
-      }
-
-    });
-
-  });
-
   function getEntry() {
+    var task_status = $("#task_status").val();
+    var nav_task_id = $("#nav_task_id").val();
     $("#dt_details").DataTable().destroy();
     $("#dt_details").DataTable({
       "processing": true,
       "responsive": true,
       "ajax": {
         "type": "POST",
-        "url": "ajax/datatables/users.php",
+        "url": "ajax/datatables/faculty_task_report.php",
         "dataSrc": "data",
         "data": {
-          //type:type
+          task_status:task_status,
+          task_id:nav_task_id
         }
       },
       "columns": [
-        // {
-        //   "mRender": function(data, type, row) {
-        //     return "<div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' value=" + row.user_id + " class='dt_id form-check-input'><i class='input-helper'></i></label></div>";
-        //   }
-        // },
-        {
-          "mRender": function(data, type, row) {
-            return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails(" + row.user_id + ")'><span class='mdi mdi-lead-pencil'></span></button></center>";
-          }
-        },
         {
           "data": "count"
         },
         {
-          "data": "full_name"
+          "data": "task_title"
         },
         {
-          "data": "category"
+          "data": "faculty_name"
         },
         {
-          "data": "program"
+          "data": "task_desc"
         },
         {
-          "data": "designation"
+          "data": "file_name"
         },
         {
-          "data": "academic_rank"
+          "data": "submission_date"
         },
         {
-          "data": "date_added"
+          "data": "posted_date"
+        },
+        {
+          "data": "deadline_date"
         }
       ]
     });
+
 
   }
 </script>
