@@ -21,7 +21,7 @@
           </p>
           <div class="col-lg-12">
               <div class="form-group col-lg-4">
-                <label><strong>Type:</strong></label>
+                <!-- <label><strong>Type:</strong></label> -->
                 <div>
                   <select class="select2 form-control form-control-lg" id="task_status" onchange="getEntry()">
                     <option value="A">All</option>
