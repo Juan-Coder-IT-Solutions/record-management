@@ -5,6 +5,8 @@ include 'core/config.php';
 $page = (isset($_GET['page']) && $_GET['page'] != '') ? $_GET['page'] : '';
 checkLoginStatus();
 
+taskChecker();
+
 $user_id = $_SESSION['rm_user_id'];
 ?>
 <!DOCTYPE html>
@@ -29,23 +31,25 @@ $user_id = $_SESSION['rm_user_id'];
   <!-- Plugin js for this page-->
   <!-- End plugin js for this page-->
   <!-- inject:js -->
-  <script src="js/template.js"></script>
   <!-- endinject -->
   <!-- plugin js for this page -->
   <!-- End plugin js for this page -->
 
   <script src="vendors/base/vendor.bundle.base.js"></script>
+  <script src="js/template.js"></script> <script src="vendors/typeahead.js/typeahead.bundle.min.js"></script>
+  <script src="vendors/select2/select2.min.js"></script>
+   <script src="../../vendors/typeahead.js/typeahead.bundle.min.js"></script>
   <script src="vendors/sweetalert/sweetalert2.js"></script>
   <script src="vendors/sweetalert/sweetalert.js"></script>
-  <script src="vendors/chart.js/Chart.min.js"></script>
-  <script src="vendors/progressbar.js/progressbar.min.js"></script>
+  <!-- <script src="vendors/chart.js/Chart.min.js"></script> -->
+  <!-- <script src="vendors/progressbar.js/progressbar.min.js"></script> -->
   <script src="vendors/chartjs-plugin-datalabels/chartjs-plugin-datalabels.js"></script>
   <script src="vendors/justgage/raphael-2.1.4.min.js"></script>
   <script src="vendors/justgage/justgage.js"></script>
   <script src="js/jquery.cookie.js" type="text/javascript"></script>
   <script src="vendors/datatables/jquery.dataTables.min.js"></script>
   <script src="vendors/datatables/dataTables.bootstrap4.min.js"></script>
-  <script src="vendors/select2/select2.min.js"></script>
+  <script src="vendors/js/select2.js"></script>
 
   <!-- endinject -->
   <link rel="shortcut icon" href="images/chmsu.png" />
@@ -55,6 +59,7 @@ $user_id = $_SESSION['rm_user_id'];
   <div class="container-scroller">
     <!-- partial:partials/_horizontal-navbar.html -->
     <?php include "components/navbar.php"; ?>
+    
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
 
@@ -86,6 +91,9 @@ $user_id = $_SESSION['rm_user_id'];
       // alert(1);
     });
 
+    function readNotif(id, assigned_task_id){
+      window.location = "index.php?page=assign-task&id="+assigned_task_id+"&notif="+id;
+    }
 
     function alertNotify(title, message, type) {
       swal("" + title + "", "" + message + "", "" + type + "");
@@ -122,9 +130,9 @@ $user_id = $_SESSION['rm_user_id'];
 
     function addEntry() {
       $(".modal_type").val("add");
-      $('.select2').select2({
-        dropdownParent: $('#modal_entry')
-      });
+      // $('.select2').select2({
+      //   dropdownParent: $('#modal_entry')
+      // });
 
       $("#div_password").show();
       $("#modal_entry").modal("show");

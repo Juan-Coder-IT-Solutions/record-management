@@ -9,7 +9,8 @@ while( $row = $fetch_products->fetch_array() ){
     $list['count'] = $count++;
     $list['program_id'] = $row['program_id'];
     $list['program_name'] = $row['program_name'];
-    $list['date_added'] = date('F d,Y', strtotime($row['date_added']));
+    $list['encoded_by'] = getUser($row['user_id']);
+    $list['date_added'] = date('F d,Y  h:i:s A', strtotime($row['date_added']));
 	array_push($response['data'], $list);
 }
 

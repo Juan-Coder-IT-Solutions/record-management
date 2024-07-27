@@ -13,7 +13,7 @@ while( $row = $fetch->fetch_array() ){
     $list['btn_download'] = "<a class='btn btn-primary' href='$file' title='Click to download' download><span class='mdi mdi-download'></span></a>";
     $list['file_id'] = $row['file_id'];
     $list['file_name'] = $row['file_name'];
-    $list['date_added'] = date('F d,Y', strtotime($row['date_added']));
+    $list['date_added'] = date('F d,Y h:i:s A', strtotime($row['date_added']));
 	array_push($response['data'], $list);
 }
 

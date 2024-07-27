@@ -14,8 +14,8 @@ while( $row = $fetch->fetch_array() ){
     $list['task_desc'] = $row['task_desc'];
     $list['status'] = $row['status'];
     $list['encoded_by'] = getUser($row['user_id']);
-    $list['posted_date'] = date('F d,Y', strtotime($row['posted_date']));
-    $list['deadline_date'] = date('F d,Y', strtotime($row['deadline_date']));
+    $list['posted_date'] = date('F d,Y h:i:s A', strtotime($row['posted_date']));
+    $list['deadline_date'] = date('F d,Y h:i:s A', strtotime($row['deadline_date']));
 	array_push($response['data'], $list);
 }
 

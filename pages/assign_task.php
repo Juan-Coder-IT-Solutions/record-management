@@ -4,22 +4,26 @@ $fetch = $mysqli_connect->query("SELECT * FROM tbl_assigned_tasks WHERE assigned
 $row = $fetch->fetch_array();
 $task_row = task_row($row['task_id']);
 
+if (isset($_GET['notif'])) {
+    $mysqli_connect->query("UPDATE tbl_notifications SET status=0 WHERE notification_id='$_GET[notif]'") or die(mysqli_error());
+}
+
 ?>
 <div class="content-wrapper">
     <div class="row">
-        <div class="col-md-2 grid-margin stretch-card">
+        <div class="col-md-3 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <hr>
                     <form class="forms-sample">
                         <?php if ($row['user_id'] == $user_id) { ?>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <button style="width: 100%;" type="button" onclick="uploadShow()" class="btn btn-primary btn-icon-text">
                                     <i class="mdi mdi-upload btn-icon-prepend"></i>
                                     Upload File
                                 </button>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <button onclick="deleteEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-danger btn-icon-text">
                                     <i class="mdi mdi-close-circle btn-icon-prepend"></i>
                                     Delete Entry
@@ -33,18 +37,43 @@ $task_row = task_row($row['task_id']);
                         <p>Deadline: <?= $task_row['deadline_date'] ?></p>
                         <hr>
                     </form>
-                    <?php if ($task_row['user_id'] == $user_id) { ?>
-                        <textarea style="height: 150px;" class="form-control" id="comment" placeholder="Leave a comment here"><?= $row['comment'] ?></textarea>
-                        <br>
-                        <button class="btn btn-primary" onclick="submitComment(<?= $assigned_task_id ?>)" style="width: 100%;">Submit</button>
-                    <?php } else { ?>
-                        <textarea readonly style="height: 150px;" class="form-control" placeholder="No comment yet"><?= $row['comment'] ?></textarea>
-                    <?php } ?>
+                    <div id="con_comment" class="row" style="max-height: 200px;overflow-y: auto;">
+                        <?php
+                        $fetchComments = $mysqli_connect->query("SELECT * FROM tbl_comments WHERE assigned_task_id='$assigned_task_id'");
+                        while ($comRow = $fetchComments->fetch_array()) { ?>
+
+                            <?php if ($comRow['user_id'] != $user_id) { ?>
+                                <div class="col-md-8">
+                                    <address class="text-primary">
+                                        <p style="text-align: left;" class="font-weight-bold"><?= $comRow['comment'] ?></p>
+                                        <p style="text-align: left;font-size:8px;color: #9E9E9E;"><?= time_ago($comRow['date_added']) ?></p>
+                                    </address>
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                            <?php } ?>
+                            <?php if ($comRow['user_id'] == $user_id) { ?>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-8">
+                                    <address class="text-success">
+                                        <p style="text-align: right;" class="font-weight-bold">
+                                            <?= $comRow['comment'] ?>
+                                        </p>
+                                        <p style="text-align: right;font-size:8px;color: #9E9E9E;"><?= time_ago($comRow['date_added']) ?></p>
+                                    </address>
+                                </div>
+                            <?php } ?>
+                        <?php } ?>
+
+                    </div>
+                    <textarea style="height: 90px;" id="comment" class="form-control" placeholder="Leave comment"></textarea>
+                    <button class="btn btn-primary" onclick="submitComment(<?= $assigned_task_id ?>)" style="width: 100%;">Submit</button>
                 </div>
             </div>
         </div>
         <input type="hidden" id="assigned_task_id" value="<?= $assigned_task_id ?>">
-        <div class="col-md-10 grid-margin stretch-card">
+        <div class="col-md-9 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <h1 class="card-title"><?= getUser($row['user_id']) ?></h1>
@@ -107,7 +136,13 @@ $task_row = task_row($row['task_id']);
 <script>
     $(document).ready(function() {
         getEntry();
+        scrollToBottom();
     });
+
+    function scrollToBottom() {
+        var commentsDiv = document.getElementById("con_comment");
+        commentsDiv.scrollTop = commentsDiv.scrollHeight;
+    }
 
     function uploadShow() {
         $("#modal_upload").modal("show");
@@ -232,25 +267,43 @@ $task_row = task_row($row['task_id']);
 
     });
 
-    function submitComment(id){
-        var comment = $("#comment").val();
+    function submitComment(id) {
+        var comment = $('#comment').val();
+        if (comment.length > 0) {
+            $.ajax({
+                type: "POST",
+                url: "ajax/addComment.php",
+                data: {
+                    id: id,
+                    comment: comment
+                },
+                success: function(data) {
+                    if (data == 1) {
+                        success_add();
+                        $('#comment').val('');
+                        getComments(id);
+                        scrollToBottom();
+                    } else {
+                        failed_query("Comment");
+                    }
+                }
+            });
+        } else {
+            swal("Cannot proceed!", "Please enter a comment!", "warning");
+        }
+    }
+
+    function getComments(assigned_task_id) {
         $.ajax({
             type: "POST",
-            url: "ajax/updateComment.php",
+            url: "ajax/getComments.php",
             data: {
-                id:id,
-                comment:comment
+                assigned_task_id: assigned_task_id
             },
             success: function(data) {
-                if (data == 1) {
-                    success_add();
-                }else {
-                    failed_query("Assigned Task");
-                    alert(data);
-                }
-                $("#btn_submit_entry").prop("disabled", false);
+                $("#con_comment").html(data);
+                scrollToBottom();
             }
-
         });
     }
 

@@ -15,9 +15,9 @@
               </button>
             </div>
             <div class="col-md-12">
-              <button onclick="deleteEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-danger btn-icon-text">
-                <i class="mdi mdi-close-circle btn-icon-prepend"></i>
-                Delete Entry
+              <button onclick="archieveEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-warning btn-icon-text">
+                <i class="mdi mdi-archive btn-icon-prepend"></i>
+                Archive
               </button>
             </div>
           </form>
@@ -35,7 +35,7 @@
           <div class="col-lg-12">
             <div class="card mb-4">
               <div class="table-responsive p-3">
-              <table class="table align-items-center table-flush table-hover" id="dt_details">
+                <table class="table align-items-center table-flush table-hover" id="dt_details">
                   <thead class="thead-light">
                     <tr>
                       <th>
@@ -48,6 +48,7 @@
                       <th>Encoded By</th>
                       <th>Posted Date</th>
                       <th>Deadline Date</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -61,7 +62,6 @@
     </div>
   </div>
 </div>
-
 <?php require_once 'modals/modal_tasks.php'; ?>
 <?php require_once 'modals/modal_add_task_assigned.php'; ?>
 <script>
@@ -69,7 +69,7 @@
     getEntry();
   });
 
-  function deleteEntry() {
+  function archieveEntry() {
     var count_checked = $(".dt_id:checked").length;
     var tb = "tbl_tasks";
     var keyword = "task_id";
@@ -81,7 +81,7 @@
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
-          confirmButtonText: "Yes, delete it!",
+          confirmButtonText: "Yes, archive it!",
           cancelButtonText: "No, cancel!",
           closeOnConfirm: false,
           closeOnCancel: false
@@ -96,7 +96,7 @@
 
             $.ajax({
               type: "POST",
-              url: "ajax/deleteBulkEntries.php",
+              url: "ajax/archieveTask.php",
               data: {
                 id: checkedValues,
                 tb: tb,
@@ -119,7 +119,7 @@
           }
         });
     } else {
-      swal("Cannot proceed!", "Please select entries to delete!", "warning");
+      swal("Cannot proceed!", "Please select entries to archive!", "warning");
     }
   }
 
@@ -151,13 +151,13 @@
 
   function getAssignedTask(id, task_title) {
     $('.select2').select2({
-        dropdownParent: $('#modal_entry_task_assign')
-      });
+      dropdownParent: $('#modal_entry_task_assign')
+    });
     $("#task_id_assign").val(id);
     $("#modal_entry_task_assign").modal("show");
     $("#assign_title").html(task_title);
     getEntryAssigned();
-   
+
   }
 
   $("#frm_add").submit(function(e) {
@@ -213,8 +213,9 @@
         },
         {
           "mRender": function(data, type, row) {
-            return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails(" + row.task_id + ")'><span class='mdi mdi-lead-pencil'></span></button><button class='btn btn-warning btn-circle btn-sm' onclick='getAssignedTask(" + row.task_id + ", \""+row.task_title+"\")'><span class='mdi mdi-account-multiple-plus'></span></button></center>";
-
+            return `<center>
+                      <button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails(${row.task_id})'><span class='mdi mdi-lead-pencil'></span></button><button class='btn btn-success btn-circle btn-sm' onclick='window.location="index.php?page=manage-assigned-task&id=${row.task_id}"'><span class='mdi mdi-account-multiple-plus'></span></button>
+                    </center>`;
           }
         },
         {
@@ -234,116 +235,16 @@
         },
         {
           "data": "deadline_date"
-        }
-      ]
-    });
-
-  }
-
-  
-  function deleteAssign(id) {
-    
-    var tb = "tbl_assigned_tasks";
-    var keyword = "assigned_task_id";
-    swal({
-        title: "Are you sure?",
-        text: "You will not be able to recover these entries!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel!",
-        closeOnConfirm: false,
-        closeOnCancel: false
-      },
-      function(isConfirm) {
-        if (isConfirm) {
-          
-          $.ajax({
-            type: "POST",
-            url: "ajax/deleteEntries.php",
-            data: {
-              id: id,
-              tb: tb,
-              keyword: keyword
-            },
-            success: function(data) {
-              if (data == 1) {
-                success_delete();
-                getEntryAssigned();
-                
-              } else {
-                failed_query("Assign Task Delete");
-              }
-
-              $("#btn_delete").prop('disabled', false);
-            }
-          });
-
-        } else {
-          swal("Cancelled", "Entries are safe :)", "error");
-        }
-      });
-  }
-
-  function getEntryAssigned() {
-    var task_id = $("#task_id_assign").val();
-    $("#dt_details_2").DataTable().destroy();
-    $("#dt_details_2").DataTable({
-      "processing": true,
-      "responsive": true,
-      "ajax": {
-        "type": "POST",
-        "url": "ajax/datatables/assigned_task.php",
-        "dataSrc": "data",
-        "data": {
-          task_id:task_id
-        }
-      },
-      "columns": [
+        },
         {
           "mRender": function(data, type, row) {
-            return "<center><button type='button' class='btn btn-info btn-circle btn-sm' onclick='window.location = \"index.php?page=assign-task&id=" + row.assigned_task_id + "\"'><span class='mdi mdi-file-document'></span></button><button type='button' class='btn btn-danger btn-circle btn-sm' onclick='deleteAssign(" + row.assigned_task_id + ")'><span class='mdi mdi-delete'></span></button></center>";
-
+            return row.status == "P" ? "<span class='btn btn-inverse-warning btn-fw btn-sm'>Pending</span>" : (row.status == "O" ? "<span class='btn btn-inverse-info btn-fw btn-sm'>Ongoing</span>" : "<span class='btn btn-inverse-success btn-fw btn-sm'>Finished</span>") ;
           }
-        },
-        {
-          "data": "count"
-        },
-        {
-          "data": "full_name"
-        },
-        {
-          "data": "comment"
         }
       ]
     });
 
   }
 
-  $("#frm_add_task_assign").submit(function(e) {
-    e.preventDefault();
-    $("#btn_assign_entry").prop("disabled", true);
-    var type = $(".modal_type").val();
-    $.ajax({
-      type: "POST",
-      url: "ajax/addAssignTask.php",
-      data: $("#frm_add_task_assign").serialize(),
-      success: function(data) {
-        if (data == 1) {
-          success_add();
-          getEntryAssigned();
-        } else if (data == 2) {
-          entry_already_exists();
-        } else {
-          failed_query("Assign Task");
-          alert(data);
-        }
-        $("#btn_assign_entry").prop("disabled", false);
-      }
-
-    });
-
-  });
 
 </script>

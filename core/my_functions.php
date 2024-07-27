@@ -39,6 +39,20 @@ function program_name($id)
 	}
 }
 
+function taskNname($id)
+{
+
+	global $mysqli_connect;
+
+	$fetchData = $mysqli_connect->query("SELECT task_title FROM `tbl_tasks` WHERE task_id='$id'");
+	if ($fetchData->num_rows > 0) {
+		$row = $fetchData->fetch_array();
+		return $row[0];
+	} else {
+		return "---";
+	}
+}
+
 function task_row($id)
 {
 
@@ -92,4 +106,72 @@ function total_program()
 	$row = $fetchData->fetch_array();
 
 	return $row[0];
+}
+
+function add_notifications($user_id, $task_id, $assigned_task_id, $title)
+{
+
+	global $mysqli_connect;
+
+	$query = $mysqli_connect->query("INSERT INTO tbl_notifications (`user_id`, `task_id`, `title`, `status`, assigned_task_id) VALUES ('$user_id', '$task_id', '$title', 1, '$assigned_task_id')") or die(mysqli_error());
+
+	return $query;
+}
+
+function total_unread_notification($user_id)
+{
+
+	global $mysqli_connect;
+
+	$fetchData = $mysqli_connect->query("SELECT count(notification_id) FROM `tbl_notifications` WHERE user_id='$user_id' AND status='1'");
+	$row = $fetchData->fetch_array();
+
+	return $row[0];
+}
+
+function taskChecker()
+{
+
+	global $mysqli_connect;
+
+	$date_now = getCurrentDate();
+
+	$query = $mysqli_connect->query("UPDATE tbl_tasks SET status = CASEWHEN posted_date <= '$date_now' AND deadline_date > '$date_now' THEN 'O' WHEN posted_date > '$date_now' THEN 'P' WHEN posted_date < '$date_now' AND  deadline_date <= '$date_now' THEN 'F' END");
+	
+	return $query;
+}
+
+function time_ago($datetime)
+{
+	$now = new DateTime(getCurrentDate());
+	$ago = new DateTime($datetime);
+	$diff = $now->diff($ago);
+
+	// Calculate weeks and adjust days
+	$diff->w = floor($diff->d / 7);
+	$diff->d -= $diff->w * 7;
+
+	// Map of time units
+	$string = array(
+		'y' => 'year',
+		'm' => 'month',
+		'w' => 'week',
+		'd' => 'day',
+		'h' => 'hour',
+		'i' => 'minute',
+		's' => 'second',
+	);
+
+	// Format time units
+	foreach ($string as $k => &$v) {
+		if ($diff->$k) {
+			$v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+		} else {
+			unset($string[$k]);
+		}
+	}
+
+	// Return the largest time unit or 'just now'
+	$string = array_slice($string, 0, 1);
+	return $string ? implode(', ', $string) . ' ago' : 'just now';
 }

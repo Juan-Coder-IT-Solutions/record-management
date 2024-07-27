@@ -12,6 +12,7 @@ while( $row = $fetch->fetch_array() ){
     $list['assigned_task_id'] = $row['assigned_task_id'];
     $list['comment'] = $row['comment'];
     $list['full_name'] = getUser($row['user_id']);
+    $list['encoded_by'] = getUser($row['encoded_by']);
 	array_push($response['data'], $list);
 }
 

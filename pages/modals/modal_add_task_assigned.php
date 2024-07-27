@@ -10,10 +10,12 @@
             <input type="hidden" class="form-control modal_type" name="type">
             <input type="hidden" class="form-control" id="task_id_assign" name="task_id">
             <div class="col-sm-12">
+              
               <div class="form-group">
-                <label for="exampleInputPassword4">User <strong style="color:red;">*</strong></label>
-                <div>
-                  <select class="select2 form-control form-control-lg" id="user_id" name="user_id" style="width: 100%;">
+                <!-- <label for="exampleInputPassword4">User <strong style="color:red;">*</strong></label>
+                <div> -->
+                  <!-- class="select2 form-control form-control-lg" -->
+                  <select class="js-example-basic-multiple w-100" style="width:100%" multiple="multiple"  id="user_id" name="user_id">
                     <option value="">Please Select</option>
                     <?php
                     $fetch_program = $mysqli_connect->query("SELECT * FROM tbl_users") or die(mysqli_error());
@@ -21,8 +23,15 @@
                       <option value='<?= $pRpow['user_id'] ?>'><?= $pRpow['first_name'] . " " . $pRpow['middle_name'] . " " . $pRpow['last_name'] ?></option>";
                     <?php }  ?>
                   </select>
-                </div>
+                <!-- </div> -->
               </div>
+              <select class="js-example-basic-multiple w-100" multiple="multiple">
+                      <option value="AL">Alabama</option>
+                      <option value="WY">Wyoming</option>
+                      <option value="AM">America</option>
+                      <option value="CA">Canada</option>
+                      <option value="RU">Russia</option>
+                    </select>
             </div>
             <div class="col-sm-12">
               <div class="card">

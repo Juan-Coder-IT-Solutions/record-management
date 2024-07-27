@@ -24,13 +24,13 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label for="exampleInputPassword4">Posted Date <strong style="color:red;">*</strong></label>
-                <input type="date" class="form-control" id="posted_date" name="posted_date" autocomplete="off" required>
+                <input type="datetime-local" class="form-control"  id="posted_date" name="posted_date" autocomplete="off" required>
               </div>
             </div>
             <div class="col-sm-6">
               <div class="form-group">
                 <label for="exampleInputPassword4">Deadline Date <strong style="color:red;">*</strong></label>
-                <input type="date" class="form-control" id="deadline_date" name="deadline_date" autocomplete="off" required>
+                <input type="datetime-local" class="form-control" id="deadline_date" name="deadline_date" autocomplete="off" required>
               </div>
             </div>
           </div>

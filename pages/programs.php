@@ -44,6 +44,7 @@
                       <th></th>
                       <th>#</th>
                       <th>Name</th>
+                      <th>Encoded By</th>
                       <th>Date</th>
                     </tr>
                   </thead>
@@ -206,6 +207,9 @@
         },
         {
           "data": "program_name"
+        },
+        {
+          "data": "encoded_by"
         },
         {
           "data": "date_added"
