@@ -10,7 +10,7 @@
             List of Task Report
           </p>
           <div class="col-lg-12">
-            <div class="form-group col-lg-4">
+            <div class="form-group col-lg-6">
               <label><strong>Type:</strong></label>
               <div>
                 <select class="select2 form-control form-control-lg" id="task_status" onchange="getEntry()">

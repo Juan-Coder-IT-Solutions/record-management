@@ -11,7 +11,7 @@
           </p>
           <div class="row">
             <div class="col-lg-12">
-              <div class="form-group col-lg-4 d-flex align-items-center">
+              <div class="form-group col-lg-6 d-flex align-items-center">
                 <label class="mr-2"><strong>Task:</strong></label>
                 <div class="flex-grow-1">
                   <select class="form-control form-control-lg" id="task_id">
