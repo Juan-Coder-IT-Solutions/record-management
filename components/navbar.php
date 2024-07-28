@@ -120,7 +120,10 @@
             </a>
             <div class="submenu">
               <ul>
-                <li class="nav-item"><a class="nav-link" href="index.php?page=faculty-task-report">Faculty Task Submission</a></li><li class="nav-item"><a class="nav-link" href="index.php?page=task-report">List of Task</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.php?page=faculty-task-report">Faculty Task Submission</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.php?page=list-task">List of Task</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.php?page=task-report">Task Report</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.php?page=users-report">Users Report</a></li>
               </ul>
             </div>
           </li>

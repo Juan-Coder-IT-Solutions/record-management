@@ -17,8 +17,12 @@
 		require view.'faculty_task_report.php';
 	}else if($page == 'manage-assigned-task'){
 		require view.'manage_assigned_task.php';
-	}else if($page == 'task-report'){
+	}else if($page == 'list-task'){
 		require view.'task_report.php';
+	}else if($page == 'task-report'){
+		require view.'task_report_details.php';
+	}else if($page == 'users-report'){
+		require view.'users_report.php';
 	}else{
 		if(!empty($page) or $page != $page){
 			require view.'error.php';
@@ -27,4 +31,4 @@
 		}
 	}
 	
- ?>task_report
+ ?>
