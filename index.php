@@ -36,9 +36,9 @@ $user_id = $_SESSION['rm_user_id'];
   <!-- End plugin js for this page -->
 
   <script src="vendors/base/vendor.bundle.base.js"></script>
-  <script src="js/template.js"></script> <script src="vendors/typeahead.js/typeahead.bundle.min.js"></script>
+  <!-- <script src="js/template.js"></script> -->
+  <!-- <script src="vendors/typeahead.js/typeahead.bundle.min.js"></script> -->
   <script src="vendors/select2/select2.min.js"></script>
-   <script src="../../vendors/typeahead.js/typeahead.bundle.min.js"></script>
   <script src="vendors/sweetalert/sweetalert2.js"></script>
   <script src="vendors/sweetalert/sweetalert.js"></script>
   <!-- <script src="vendors/chart.js/Chart.min.js"></script> -->

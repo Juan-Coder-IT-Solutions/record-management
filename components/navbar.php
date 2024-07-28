@@ -79,7 +79,7 @@
         <?php
         if ($_SESSION['user_category'] != "F" and $_SESSION['user_category'] != "S") {
         ?>
-          <li class="nav-item">
+          <li class="nav-item <?= ($page == "programs" ? "active" : "") ?>">
             <a href="index.php?page=programs" class="nav-link">
               <i class="mdi mdi-cube-outline menu-icon"></i>
               <span class="menu-title">Programs</span>
@@ -89,7 +89,7 @@
         <?php
         if ($_SESSION['user_category'] == "F" || $_SESSION['user_category'] == "S") {
         ?>
-          <li class="nav-item">
+          <li class="nav-item <?= ($page == "tasks" ? "active" : "") ?>">
             <a href="index.php?page=list-tasks" class="nav-link">
               <i class="mdi mdi-chart-gantt menu-icon"></i>
               <span class="menu-title">Task</span>
