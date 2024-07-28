@@ -9,19 +9,26 @@
           <p class="card-description" style="color: #464dee;">
             List of Task Report
           </p>
-          <div class="col-lg-12">
-            <div class="form-group col-lg-6">
-              <label><strong>Type:</strong></label>
-              <div>
-                <select class="select2 form-control form-control-lg" id="task_status" onchange="getEntry()">
-                  <option value="-1">All</option>
-                  <option value="P">Pending</option>
-                  <option value="O">Ongoing</option>
-                  <option value="F">Finished</option>
-                </select>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group col-lg-6 d-flex align-items-center">
+                <label class="mr-2"><strong>Type: &nbsp;&nbsp;</strong></label>
+                <div class="flex-grow-1">
+                  <select class="select2 form-control form-control-lg" id="task_status" onchange="getEntry()">
+                    <option value="-1">All</option>
+                    <option value="P">Pending</option>
+                    <option value="O">Ongoing</option>
+                    <option value="F">Finished</option>
+                  </select>
+                </div>
+                <button type="button" onclick="getEntry()" class="btn btn-outline-warning btn-icon-text">
+                  <i class="mdi mdi-reload btn-icon-prepend"></i>
+                  Generate
+                </button>
               </div>
             </div>
           </div>
+
           <div class="col-lg-12">
             <div class="card mb-4">
               <div class="table-responsive p-3">

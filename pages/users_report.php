@@ -12,7 +12,7 @@
           <div class="row">
             <div class="col-lg-12">
               <div class="form-group col-lg-6 d-flex align-items-center">
-                <label class="mr-2"><strong>Program:</strong></label>
+                <label class="mr-2"><strong>Program:&nbsp;&nbsp;</strong></label>
                 <div class="flex-grow-1">
                   <select class="form-control form-control-lg" id="program_id">
                     <option value="-1">&mdash;ALL&mdash;</option>
