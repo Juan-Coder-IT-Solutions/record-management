@@ -4,8 +4,25 @@ $fetch = $mysqli_connect->query("SELECT * FROM tbl_assigned_tasks WHERE assigned
 $row = $fetch->fetch_array();
 $task_row = task_row($row['task_id']);
 
+
 if (isset($_GET['notif'])) {
     $mysqli_connect->query("UPDATE tbl_notifications SET status=0 WHERE notification_id='$_GET[notif]'") or die(mysqli_error());
+}
+// <span class='btn btn-inverse-warning btn-fw btn-sm'>Pending</span>" : (row.status == "O" ? "<span class='btn btn-inverse-info btn-fw btn-sm'>Ongoing</span>" : "<span class='btn btn-inverse-success btn-fw btn-sm'>Finished</span>
+if ($task_row['status'] == "P") {
+    $status = "<span class='btn btn-inverse-warning btn-fw btn-sm'>Pending</span>";
+} else {
+    if ($row['status'] == "U") {
+        $status = "<span class='btn btn-inverse-info btn-fw btn-sm'>Uploaded</span>";
+    } else if ($row['status'] == "A") {
+        $status = "<span class='btn btn-inverse-success btn-fw btn-sm'>Approved</span>";
+    } else if ($row['status'] == "R") {
+        $status = "<span class='btn btn-inverse-danger btn-fw btn-sm'>Revision</span>";
+    } else if ($row['status'] == "C") {
+        $status = "<span class='btn btn-inverse-primary btn-fw btn-sm'>Checking</span>";
+    } else {
+        $status = "<span class='btn btn-inverse-warning btn-fw btn-sm'>Not Uploaded</span>";
+    }
 }
 
 ?>
@@ -17,13 +34,13 @@ if (isset($_GET['notif'])) {
                     <hr>
                     <form class="forms-sample">
                         <?php if ($row['user_id'] == $user_id) { ?>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <button style="width: 100%;" type="button" onclick="uploadShow()" class="btn btn-primary btn-icon-text">
                                     <i class="mdi mdi-upload btn-icon-prepend"></i>
                                     Upload File
                                 </button>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <button onclick="deleteEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-danger btn-icon-text">
                                     <i class="mdi mdi-close-circle btn-icon-prepend"></i>
                                     Delete Entry
@@ -32,6 +49,7 @@ if (isset($_GET['notif'])) {
                         <?php } ?>
                         <hr>
                         <h2 class="card-title" style="color:#0ddbb9;"><?= $task_row['task_title'] ?></h2>
+                        <p>Status: <?= $status ?></p>
                         <p>Description: <?= $task_row['task_desc']; ?></p>
                         <p>Posted: <?= $task_row['posted_date'] ?></p>
                         <p>Deadline: <?= $task_row['deadline_date'] ?></p>
@@ -73,13 +91,26 @@ if (isset($_GET['notif'])) {
             </div>
         </div>
         <input type="hidden" id="assigned_task_id" value="<?= $assigned_task_id ?>">
+        <input type="hidden" id="assigned_user_id" value="<?= $row['user_id'] ?>">
+        <input type="hidden" id="task_id" value="<?= $row['task_id'] ?>">
         <div class="col-md-9 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <h1 class="card-title"><?= getUser($row['user_id']) ?></h1>
-                    <p class="card-description" style="color: #464dee;">
+                    <!-- <p class="card-description" style="color: #464dee;">
                         Manage Files
-                    </p>
+                    </p> -->
+                    <?php
+                    if ($task_row['user_id'] == $user_id) { ?>
+                        <div class="col-lg-12">
+                            <div class="template-demo">
+                                <button type="button" <?= $row['status'] == "U" || $row['status'] == "R" ? "" : "hidden"; ?> onclick="changeStatus('C')" class="btn btn-info btn-fw">Checking</button>
+                                <button type="button" <?= $row['status'] == "C" ? "" : "hidden"; ?> onclick="changeStatus('R')" class="btn btn-warning btn-fw">Revision</button>
+                                <button type="button" <?= $row['status'] == "C" || $row['status'] == "R" ? "" : "hidden"; ?> onclick="changeStatus('A')" class="btn btn-success btn-fw">Approved</button>
+                            </div>
+                        </div>
+                        <hr>
+                    <?php } ?>
                     <div class="col-lg-12">
                         <div class="card mb-4">
                             <div class="table-responsive p-3">
@@ -115,7 +146,9 @@ if (isset($_GET['notif'])) {
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <input type="hidden" class="form-control" value="<?= $assigned_task_id; ?>" name="assigned_task_id">
+                        <input type="hidden" value="<?= $assigned_task_id; ?>" name="assigned_task_id">
+                        <input type="hidden" value="<?= $row['task_id']; ?>" name="task_id">
+                        <input type="hidden" value="<?= $task_row['user_id']; ?>" name="user_id">
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label for="exampleInputPassword4">File</label>
@@ -146,6 +179,49 @@ if (isset($_GET['notif'])) {
 
     function uploadShow() {
         $("#modal_upload").modal("show");
+    }
+
+    function changeStatus(status) {
+        var assigned_task_id = $("#assigned_task_id").val();
+        var assigned_user_id = $("#assigned_user_id").val();
+        var task_id = $("#task_id").val();
+        swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover these entries!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, change it!",
+                cancelButtonText: "No, cancel!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        url: "ajax/taskChangeStatus.php",
+                        data: {
+                            status: status,
+                            assigned_task_id: assigned_task_id,
+                            user_id: assigned_user_id,
+                            task_id: task_id
+                        },
+                        success: function(data) {
+                            if (data == 1) {
+                                success_update();
+                                location.reload();
+                            } else {
+                                failed_query("Programs");
+                            }
+
+                        }
+                    });
+
+                } else {
+                    swal("Cancelled", "Entries are safe :)", "error");
+                }
+            });
     }
 
     function deleteEntry() {
@@ -252,7 +328,7 @@ if (isset($_GET['notif'])) {
                 if (data == 1) {
                     success_add();
                     $('#file_name').val("");
-                    getEntry();
+                    location.reload();
                     $("#modal_upload").modal("hide");
                 } else if (data == 2) {
                     entry_already_exists();

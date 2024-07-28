@@ -22,7 +22,7 @@
               <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
 
               <?php
-              $fetch_notif = $mysqli_connect->query("SELECT * FROM tbl_notifications WHERE user_id='$user_id' AND status=1") or die(mysqli_error());
+              $fetch_notif = $mysqli_connect->query("SELECT * FROM tbl_notifications WHERE user_id='$user_id' AND status=1 ORDER BY notification_id DESC") or die(mysqli_error());
               while ($nRow = $fetch_notif->fetch_array()) { ?>
                 <a onclick="readNotif(<?= $nRow['notification_id'] ?>, <?= $nRow['assigned_task_id'] ?>)" class="dropdown-item preview-item">
                   <div class="preview-thumbnail">
@@ -53,8 +53,8 @@
                 <i class="mdi mdi-settings text-primary"></i>
                 Profile
               </a>
-              <a onclick="logout()" class="dropdown-item">
-                <i class="mdi mdi-logout text-primary"></i>
+              <a href="#" onclick="logout()" class="dropdown-item">
+                <i onclick="logout()" class="mdi mdi-logout text-primary"></i>
                 Logout
               </a>
             </div>
@@ -120,7 +120,7 @@
             </a>
             <div class="submenu">
               <ul>
-                <li class="nav-item"><a class="nav-link" href="index.php?page=faculty-task-report">Faculty Task Submission</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.php?page=faculty-task-report">Faculty Task Submission</a></li><li class="nav-item"><a class="nav-link" href="index.php?page=task-report">List of Task</a></li>
               </ul>
             </div>
           </li>

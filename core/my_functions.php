@@ -136,8 +136,17 @@ function taskChecker()
 
 	$date_now = getCurrentDate();
 
-	$query = $mysqli_connect->query("UPDATE tbl_tasks SET status = CASEWHEN posted_date <= '$date_now' AND deadline_date > '$date_now' THEN 'O' WHEN posted_date > '$date_now' THEN 'P' WHEN posted_date < '$date_now' AND  deadline_date <= '$date_now' THEN 'F' END");
-	
+	$query = $mysqli_connect->query("UPDATE tbl_tasks SET status = CASE WHEN posted_date <= '$date_now' AND deadline_date > '$date_now' THEN 'O' WHEN posted_date > '$date_now' THEN 'P' WHEN posted_date < '$date_now' AND  deadline_date <= '$date_now' THEN 'F' END");
+
+	$fetch =  $mysqli_connect->query("SELECT  a.* FROM tbl_assigned_tasks a LEFT JOIN tbl_assigned_task_files f ON a.assigned_task_id = f.assigned_task_id  WHERE a.task_status = 'F' AND a.notification_status=0 AND f.assigned_task_id IS NULL");
+	while($row = $fetch->fetch_array()){
+		$update = $mysqli_connect->query("INSERT INTO `tbl_notifications`(`user_id`, `task_id`, `assigned_task_id`, `title`, `status`) VALUES ('$row[user_id]','$row[task_id]','$row[assigned_task_id]','Task Overdue',1)");
+
+		if($update){
+			$mysqli_connect->query("UPDATE `tbl_assigned_tasks` SET notification_status=1 WHERE assigned_task_id='$row[assigned_task_id]'");
+		}
+	}
+
 	return $query;
 }
 
