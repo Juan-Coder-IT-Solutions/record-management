@@ -64,6 +64,17 @@ function task_row($id)
 	return $row;
 }
 
+function assigned_task_row($id)
+{
+
+	global $mysqli_connect;
+
+	$fetchData = $mysqli_connect->query("SELECT * FROM `tbl_assigned_tasks` WHERE assigned_task_id='$id'");
+	$row = $fetchData->fetch_array();
+
+	return $row;
+}
+
 function user_row($id)
 {
 

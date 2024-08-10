@@ -40,6 +40,7 @@
                   <th>#</th>
                   <th>Name</th>
                   <th>Comment</th>
+                  <th>Grade</th>
                   <th>Encoded By</th>
                 </tr>
               </thead>
@@ -52,6 +53,8 @@
     </div>
   </div>
 </div>
+
+<?php require_once 'modals/modal_grades.php'; ?>
 <script>
   $(document).ready(function() {
     $('.js-example-basic-multiple').select2();
@@ -119,7 +122,7 @@
       },
       "columns": [{
           "mRender": function(data, type, row) {
-            return "<center><button type='button' class='btn btn-info btn-circle btn-sm' onclick='window.location = \"index.php?page=assign-task&id=" + row.assigned_task_id + "\"'><span class='mdi mdi-file-document'></span></button><button type='button' class='btn btn-danger btn-circle btn-sm' onclick='deleteAssign(" + row.assigned_task_id + ")'><span class='mdi mdi-delete'></span></button></center>";
+            return "<center><button type='button' class='btn btn-info btn-circle btn-sm' onclick='window.location = \"index.php?page=assign-task&id=" + row.assigned_task_id + "\"'><span class='mdi mdi-file-document'></span></button><button type='button' class='btn btn-danger btn-circle btn-sm' onclick='deleteAssign(" + row.assigned_task_id + ")'><span class='mdi mdi-delete'></span></button><button type='button' class='btn btn-success btn-circle btn-sm'  onclick='viewGrade(" + row.assigned_task_id + ","+row.task_grades+", \"" + row.full_name + "\")'><span class='mdi mdi-counter'></span></button></center>";
 
           }
         },
@@ -133,12 +136,46 @@
           "data": "comment"
         },
         {
+          "data": "task_grades"
+        },
+        {
           "data": "encoded_by"
         }
       ]
     });
 
   }
+
+  function viewGrade(id,task_grades,fullname){
+    $("#modal_entry_grades").modal("show");
+    $("#can_title").text(fullname);
+    $("#assigned_task_id").val(id);
+    $("#task_grades").val(task_grades); 
+
+  }
+
+  $("#frm_add_grades").submit(function(e) {
+    e.preventDefault();
+    $("#btn_submit_entry").prop("disabled", true);
+    $.ajax({
+      type: "POST",
+      url: "ajax/manageTaskGrade.php",
+      data: $("#frm_add_grades").serialize(),
+      success: function(data) {
+        if (data == 1) {
+          success_add();
+          getEntryAssigned();
+          $("#modal_entry_grades").modal("hide");
+        } else {
+          failed_query("Assign Task");
+          alert(data);
+        }
+        $("#btn_submit_entry").prop("disabled", false);
+      }
+
+    });
+
+  });
 
   $("#frm_add_task_assign").submit(function(e) {
     e.preventDefault();

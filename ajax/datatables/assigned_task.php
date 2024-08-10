@@ -11,6 +11,7 @@ while( $row = $fetch->fetch_array() ){
     $list['count'] = $count++;
     $list['assigned_task_id'] = $row['assigned_task_id'];
     $list['comment'] = $row['comment'];
+    $list['task_grades'] = $row['task_grades'] > 0 ? $row['task_grades'] : "<i>No grade</>";
     $list['full_name'] = getUser($row['user_id']);
     $list['encoded_by'] = getUser($row['encoded_by']);
 	array_push($response['data'], $list);

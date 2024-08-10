@@ -7,19 +7,19 @@
           <!-- <h4 class="card-title">Default form</h4> -->
           <h4 class="card-title" style="color:#0ddbb9;">Report</h4>
           <p class="card-description" style="color: #464dee;">
-            Task Report
+            Evaluation Report
           </p>
           <div class="row">
             <div class="col-lg-12">
               <div class="form-group col-lg-6 d-flex align-items-center">
-                <label class="mr-2"><strong>Task:</strong></label>
+                <label class="mr-2"><strong>Program: &nbsp;&nbsp;</strong></label>
                 <div class="flex-grow-1">
-                  <select class="form-control form-control-lg" id="task_id">
-                    <option value="">Please Select</option>
+                  <select class="form-control form-control-lg" id="program_id">
+                    <option value="-1">&mdash;ALL&mdash;</option>
                     <?php
-                    $fetch = $mysqli_connect->query("SELECT * FROM tbl_tasks") or die(mysqli_error());
+                    $fetch = $mysqli_connect->query("SELECT * FROM tbl_programs") or die(mysqli_error());
                     while ($row = $fetch->fetch_array()) { ?>
-                      <option value="<?= $row['task_id'] ?>"><?= $row['task_title'] ?></option>
+                      <option value="<?= $row['program_id'] ?>"><?= $row['program_name'] ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -30,7 +30,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="col-lg-12">
             <div class="card mb-4">
               <div class="table-responsive p-3">
@@ -39,8 +39,7 @@
                     <tr>
                       <th style="font-size: 18px;color: #0ddbb9;">#</th>
                       <th style="font-size: 18px;color: #0ddbb9;">Name</th>
-                      <th style="font-size: 18px;color: #0ddbb9;">Grade</th>
-                      <th style="font-size: 18px;color: #0ddbb9;">Status</th>
+                      <th style="font-size: 18px;color: #0ddbb9;">Task</th>
                     </tr>
                   </thead>
                   <tbody id="tb_report">
@@ -55,21 +54,42 @@
     <div class="col-md-1"></div>
   </div>
 </div>
-
 <input type="hidden" id="nav_task_id">
 <script>
   $(document).ready(function() {
     getEntry();
+    getTaskList();
   });
 
+  function updateNavTaskID(nav_task_id) {
+    $("#nav_task_id").val("");
+    $("#nav_task_id").val(nav_task_id);
+    getTaskList();
+    getEntry();
+  }
+
+  function getTaskList() {
+    var nav_task_id = $("#nav_task_id").val();
+    $.ajax({
+      type: "POST",
+      url: "ajax/getTaskList.php",
+      data: {
+        nav_task_id: nav_task_id
+      },
+      success: function(data) {
+        $("#nav_task_list").html(data);
+      }
+    });
+  }
+
   function getEntry() {
-    var task_id = $("#task_id").val();
+    var program_id = $("#program_id").val();
     // var nav_task_id = $("#nav_task_id").val();
     $.ajax({
       type: "POST",
-      url: "ajax/taskReportDetails.php",
+      url: "ajax/evaluationReport.php",
       data: {
-        task_id: task_id
+        program_id: program_id
       },
       success: function(data) {
         $("#tb_report").html(data);

@@ -124,6 +124,7 @@
                 <li class="nav-item"><a class="nav-link" href="index.php?page=list-task">List of Task</a></li>
                 <li class="nav-item"><a class="nav-link" href="index.php?page=task-report">Task Report</a></li>
                 <li class="nav-item"><a class="nav-link" href="index.php?page=users-report">Users Report</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.php?page=evaluation-report">Evaluation Report</a></li>
               </ul>
             </div>
           </li>

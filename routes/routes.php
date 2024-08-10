@@ -23,6 +23,8 @@
 		require view.'task_report_details.php';
 	}else if($page == 'users-report'){
 		require view.'users_report.php';
+	}else if($page == 'evaluation-report'){
+		require view.'evaluation_report.php';
 	}else{
 		if(!empty($page) or $page != $page){
 			require view.'error.php';
