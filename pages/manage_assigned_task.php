@@ -4,6 +4,7 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title"><?= taskNname($_GET['id']) ?></h4>
+          <input type="hidden" value="<?= $_SESSION['user_category'] ?>" id="user_category">
           <!-- <p class="card-description">
             Manage
           </p> -->
@@ -122,7 +123,9 @@
       },
       "columns": [{
           "mRender": function(data, type, row) {
-            return "<center><button type='button' class='btn btn-info btn-circle btn-sm' onclick='window.location = \"index.php?page=assign-task&id=" + row.assigned_task_id + "\"'><span class='mdi mdi-file-document'></span></button><button type='button' class='btn btn-danger btn-circle btn-sm' onclick='deleteAssign(" + row.assigned_task_id + ")'><span class='mdi mdi-delete'></span></button><button type='button' class='btn btn-success btn-circle btn-sm'  onclick='viewGrade(" + row.assigned_task_id + ","+row.task_grades+", \"" + row.full_name + "\")'><span class='mdi mdi-counter'></span></button></center>";
+            const user_category = $("#user_category").val();
+            const cat_status = user_category == "D" || user_category == "A" ? "" : "hidden"; 
+            return "<center><button type='button' class='btn btn-info btn-circle btn-sm' onclick='window.location = \"index.php?page=assign-task&id=" + row.assigned_task_id + "\"'><span class='mdi mdi-file-document'></span></button><button type='button' class='btn btn-danger btn-circle btn-sm' onclick='deleteAssign(" + row.assigned_task_id + ")'><span class='mdi mdi-delete'></span></button><button type='button' "+cat_status+" class='btn btn-success btn-circle btn-sm'  onclick='viewGrade(" + row.assigned_task_id + ","+row.task_grades+", \"" + row.full_name + "\")'><span class='mdi mdi-counter'></span></button></center>";
 
           }
         },
