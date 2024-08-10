@@ -28,7 +28,7 @@ if ($fetchUsers->num_rows > 0) {
                     echo "<ul>";
                     while ($task = $fetchTasks->fetch_array()) {
                         $task_title = $task['task_title'];
-                        $task_grades = $task['task_grades'];
+                        $task_grades = $task['task_grades'] > 0 ? $task['task_grades'] : "<i>No Score</i>";
 
                         // Display each task as a list item
                         echo "<li>Task: $task_title | Grade: $task_grades</li>";

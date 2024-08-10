@@ -23,7 +23,7 @@ if ($fetch->num_rows > 0) {
         <tr>
             <td><?= $count++ ?></td>
             <td><?= getUser($row['user_id']) ?></td>
-            <td><?= $row['task_grades'] > 0 ? $row['task_grades'] : "<i>No grade</i>" ?></td>
+            <td><?= $row['task_grades'] > 0 ? $row['task_grades'] : "<i>No Score</i>" ?></td>
             <td><?= $status ?></td>
         </tr>
 
