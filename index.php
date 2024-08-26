@@ -55,11 +55,12 @@ $user_id = $_SESSION['rm_user_id'];
   <link rel="shortcut icon" href="images/chmsu.png" />
 
 </head>
+
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_horizontal-navbar.html -->
     <?php include "components/navbar.php"; ?>
-    
+
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
 
@@ -91,8 +92,31 @@ $user_id = $_SESSION['rm_user_id'];
       // alert(1);
     });
 
-    function readNotif(id, assigned_task_id){
-      window.location = "index.php?page=assign-task&id="+assigned_task_id+"&notif="+id;
+    function logout() {
+      swal({
+          title: "Are you sure?",
+          text: "You will not be log-out!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "Yes, log-out it!",
+          cancelButtonText: "No, cancel!",
+          closeOnConfirm: false,
+          closeOnCancel: false
+        },
+        function(isConfirm) {
+          if (isConfirm) {
+
+            window.location = "core/logout.php";
+
+          } else {
+            swal("Cancelled", "Entries are safe :)", "error");
+          }
+        });
+    }
+
+    function readNotif(id, assigned_task_id) {
+      window.location = "index.php?page=assign-task&id=" + assigned_task_id + "&notif=" + id;
     }
 
     function alertNotify(title, message, type) {
@@ -134,6 +158,7 @@ $user_id = $_SESSION['rm_user_id'];
       //   dropdownParent: $('#modal_entry')
       // });
 
+      document.getElementById("frm_add").reset();
       $("#div_password").show();
       $("#modal_entry").modal("show");
     }

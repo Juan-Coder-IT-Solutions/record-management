@@ -77,7 +77,9 @@
           </a>
         </li>
         <?php
-        if ($_SESSION['user_category'] != "F" and $_SESSION['user_category'] != "S") {
+        // if ($_SESSION['user_category'] != "F" and $_SESSION['user_category'] != "S") {
+        
+        if ($_SESSION['user_category'] == "D") {
         ?>
           <li class="nav-item <?= ($page == "programs" ? "active" : "") ?>">
             <a href="index.php?page=programs" class="nav-link">
@@ -103,12 +105,14 @@
             </a>
           </li>
         <?php } ?>
+        <?php if ($_SESSION['user_category'] == "D") { ?>
         <li class="nav-item <?= ($page == "users" ? "active" : "") ?>">
           <a href="index.php?page=users" class="nav-link">
             <i class="mdi mdi-account-multiple-outline menu-icon"></i>
             <span class="menu-title">Users</span>
           </a>
         </li>
+        <?php } ?>
         <?php
         if ($_SESSION['user_category'] != "F" and $_SESSION['user_category'] != "S") {
         ?>

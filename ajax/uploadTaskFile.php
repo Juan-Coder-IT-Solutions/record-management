@@ -26,6 +26,7 @@ if (move_uploaded_file($file_loc, $folder . $task_file)) {
 
         $title = getUser($_SESSION['rm_user_id'])." uploaded a file";
         add_notifications($user_id, $task_id, $assigned_task_id, $title);
+        insert_logs($_SESSION['rm_user_id'], 'Tasks', 'Uploaded a file ('.$title.")");
         echo 1;
     } else {
         echo 0;

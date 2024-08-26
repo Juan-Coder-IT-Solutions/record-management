@@ -40,7 +40,7 @@
                   <th></th>
                   <th>#</th>
                   <th>Name</th>
-                  <th>Comment</th>
+                  <!-- <th>Comment</th> -->
                   <th>Grade</th>
                   <th>Encoded By</th>
                 </tr>
@@ -135,9 +135,9 @@
         {
           "data": "full_name"
         },
-        {
-          "data": "comment"
-        },
+        // {
+        //   "data": "comment"
+        // },
         {
           "data": "taskgrades"
         },

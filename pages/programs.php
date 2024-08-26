@@ -15,11 +15,17 @@
               </button>
             </div>
             <div class="col-md-12">
+              <button onclick="getLogs()" id="btn_history" style="width: 100%;" type="button" class="btn btn-info btn-icon-text">
+                <i class="mdi mdi-history btn-icon-prepend"></i>
+                History
+              </button>
+            </div>
+            <!-- <div class="col-md-12">
               <button onclick="deleteEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-danger btn-icon-text">
                 <i class="mdi mdi-close-circle btn-icon-prepend"></i>
                 Delete Entry
               </button>
-            </div>
+            </div> -->
           </form>
         </div>
       </div>
@@ -38,9 +44,9 @@
               <table class="table align-items-center table-flush table-hover" id="dt_details">
                   <thead class="thead-light">
                     <tr>
-                      <th>
+                      <!-- <th>
                         <div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' class='dt_id' class='form-check-input' onchange="checkAll(this,'dt_id')"><i class='input-helper'></i></label></div>
-                      </th>
+                      </th> -->
                       <th></th>
                       <th>#</th>
                       <th>Name</th>
@@ -61,10 +67,17 @@
 </div>
 
 <?php require_once 'modals/modal_programs.php'; ?>
+<?php require_once 'modals/modal_logs.php'; ?>
 <script>
   $(document).ready(function() {
     getEntry();
   });
+
+  function getLogs(){
+    var type = 'Programs';
+    $("#modal_logs").modal("show");
+    getSubDetails(type);
+  }
 
   function deleteEntry() {
     var count_checked = $(".dt_id:checked").length;
@@ -192,11 +205,12 @@
           //type:type
         }
       },
-      "columns": [{
-          "mRender": function(data, type, row) {
-            return "<div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' value=" + row.program_id + " class='dt_id form-check-input'><i class='input-helper'></i></label></div>";
-          }
-        },
+      "columns": [
+        // {
+        //   "mRender": function(data, type, row) {
+        //     return "<div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' value=" + row.program_id + " class='dt_id form-check-input'><i class='input-helper'></i></label></div>";
+        //   }
+        // },
         {
           "mRender": function(data, type, row) {
             return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails(" + row.program_id + ")'><span class='mdi mdi-lead-pencil'></span></button></center>";

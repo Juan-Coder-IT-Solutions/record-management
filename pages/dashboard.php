@@ -52,26 +52,5 @@ $row = user_row($_SESSION['rm_user_id']);
 </div>
 
 <script>
-  function logout() {
-    swal({
-        title: "Are you sure?",
-        text: "You will not be log-out!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "Yes, log-out it!",
-        cancelButtonText: "No, cancel!",
-        closeOnConfirm: false,
-        closeOnCancel: false
-      },
-      function(isConfirm) {
-        if (isConfirm) {
-
-          window.location = "core/logout.php";
-
-        } else {
-          swal("Cancelled", "Entries are safe :)", "error");
-        }
-      });
-  }
+  
 </script>

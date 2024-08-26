@@ -101,7 +101,7 @@ if ($task_row['status'] == "P") {
                         Manage Files
                     </p> -->
                     <?php
-                    if ($task_row['user_id'] == $user_id) { ?>
+                    if ($task_row['user_id'] == $user_id OR $_SESSION['user_category'] == "D") { ?>
                         <div class="col-lg-12">
                             <div class="template-demo">
                                 <button type="button" <?= $row['status'] == "U" || $row['status'] == "R" ? "" : "hidden"; ?> onclick="changeStatus('C')" class="btn btn-info btn-fw">Checking</button>

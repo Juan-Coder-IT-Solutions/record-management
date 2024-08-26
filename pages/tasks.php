@@ -14,12 +14,19 @@
                 Add Entry
               </button>
             </div>
+            
             <div class="col-md-12">
+              <button onclick="getLogs()" id="btn_history" style="width: 100%;" type="button" class="btn btn-info btn-icon-text">
+                <i class="mdi mdi-history btn-icon-prepend"></i>
+                History
+              </button>
+            </div>
+            <!-- <div class="col-md-12">
               <button onclick="archieveEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-warning btn-icon-text">
                 <i class="mdi mdi-archive btn-icon-prepend"></i>
                 Archive
               </button>
-            </div>
+            </div> -->
           </form>
         </div>
       </div>
@@ -48,7 +55,7 @@
                       <th>Encoded By</th>
                       <th>Posted Date</th>
                       <th>Deadline Date</th>
-                      <th>Status</th>
+                      <th>Progress</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -64,10 +71,19 @@
 </div>
 <?php require_once 'modals/modal_tasks.php'; ?>
 <?php require_once 'modals/modal_add_task_assigned.php'; ?>
+<?php require_once 'modals/modal_logs.php'; ?>
 <script>
   $(document).ready(function() {
     getEntry();
   });
+
+  
+  function getLogs(){
+    var type = 'Tasks';
+    $("#modal_logs").modal("show");
+    getSubDetails(type);
+  }
+
 
   function archieveEntry() {
     var count_checked = $(".dt_id:checked").length;
@@ -237,10 +253,15 @@
           "data": "deadline_date"
         },
         {
-          "mRender": function(data, type, row) {
-            return row.status == "P" ? "<span class='btn btn-inverse-warning btn-fw btn-sm'>Pending</span>" : (row.status == "O" ? "<span class='btn btn-inverse-info btn-fw btn-sm'>Ongoing</span>" : "<span class='btn btn-inverse-success btn-fw btn-sm'>Finished</span>") ;
+          "mRender" : function (data, type, row){
+              return '<div class="progress"><div class="progress-bar bg-info" role="progressbar" style="width: '+row.task_percentage+'%" title="'+row.task_percentage+'%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div></div>';  
           }
         }
+        // {
+        //   "mRender": function(data, type, row) {
+        //     return row.status == "P" ? "<span class='btn btn-inverse-warning btn-fw btn-sm'>Pending</span>" : (row.status == "O" ? "<span class='btn btn-inverse-info btn-fw btn-sm'>Ongoing</span>" : "<span class='btn btn-inverse-success btn-fw btn-sm'>Finished</span>") ;
+        //   }
+        // }
       ]
     });
 

@@ -10,6 +10,37 @@ function getCurrentDate()
 	return $system_date;
 }
 
+function calculateUploadPercentage($task_id) {
+    global $mysqli_connect;
+
+    // Query to count total number of users assigned to the task
+    $total_users_query = "
+        SELECT COUNT(*) AS total_users
+        FROM tbl_assigned_tasks
+        WHERE task_id = $task_id
+    ";
+    $total_users_result = $mysqli_connect->query($total_users_query);
+    $total_users = $total_users_result->fetch_assoc()['total_users'];
+
+    // Query to count the number of users who have uploaded their task
+    $uploaded_users_query = "
+        SELECT COUNT(DISTINCT assigned_task_id) AS uploaded_users
+        FROM tbl_assigned_task_files
+        WHERE assigned_task_id IN (
+            SELECT assigned_task_id
+            FROM tbl_assigned_tasks
+            WHERE task_id = $task_id
+        )
+    ";
+    $uploaded_users_result = $mysqli_connect->query($uploaded_users_query);
+    $uploaded_users = $uploaded_users_result->fetch_assoc()['uploaded_users'];
+
+    // Calculate the upload percentage
+    $upload_percentage = ($total_users > 0) ? ($uploaded_users / $total_users) * 100 : 0;
+
+    return $upload_percentage;
+}
+
 function getUser($user_id)
 {
 
@@ -125,6 +156,17 @@ function add_notifications($user_id, $task_id, $assigned_task_id, $title)
 	global $mysqli_connect;
 
 	$query = $mysqli_connect->query("INSERT INTO tbl_notifications (`user_id`, `task_id`, `title`, `status`, assigned_task_id) VALUES ('$user_id', '$task_id', '$title', 1, '$assigned_task_id')") or die(mysqli_error());
+
+	return $query;
+}
+
+function insert_logs($user_id, $module, $remarks)
+{
+
+	global $mysqli_connect;
+	$date = getCurrentDate();
+
+	$query = $mysqli_connect->query("INSERT INTO tbl_logs (`remarks`, `module`, `date_added`, `user_id`) VALUES ('$remarks','$module','$date','$user_id')") or die(mysqli_error());
 
 	return $query;
 }

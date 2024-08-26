@@ -15,6 +15,12 @@
               </button>
             </div>
             <div class="col-md-12">
+              <button onclick="getLogs()" id="btn_history" style="width: 100%;" type="button" class="btn btn-info btn-icon-text">
+                <i class="mdi mdi-history btn-icon-prepend"></i>
+                History
+              </button>
+            </div>
+            <div class="col-md-12">
               <!-- <button onclick="deleteEntry()" id="btn_delete" style="width: 100%;" type="button" class="btn btn-danger btn-icon-text">
                 <i class="mdi mdi-close-circle btn-icon-prepend"></i>
                 Delete Entry
@@ -64,10 +70,18 @@
 </div>
 
 <?php require_once 'modals/modal_users.php'; ?>
+<?php require_once 'modals/modal_logs.php'; ?>
 <script>
   $(document).ready(function() {
     getEntry();
   });
+
+  
+  function getLogs(){
+    var type = 'Users';
+    $("#modal_logs").modal("show");
+    getSubDetails(type);
+  }
 
   function deleteEntry() {
     var count_checked = $(".dt_id:checked").length;
