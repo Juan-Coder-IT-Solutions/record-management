@@ -11,14 +11,20 @@
           <form action="" method='POST' id='frm_add_task_assign'>
             <input type="hidden" value="<?= $_GET['id'] ?>" name="task_id" id="task_id_assign">
             <div class="form-group">
+              <label>Select Category</label>
+              <select class="select2 form-control form-control-lg" id="user_cat" name="user_category" onchange="getAssignee()" required style="width: 100%;">
+                <option value="">Please Select</option>
+                <option value="F">Faculty</option>
+                <option value="S">Staff</option>
+                <option value="P">Program Chair</option>
+                <option value="R">Registrar</option>
+                <option value="D">Dean</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label>Select Assignee</label>
               <select class="js-example-basic-multiple w-100" style="width:100%" multiple="multiple" id="user_id" name="user_id[]">
-                <option value="">Please Select</option>
-                <?php
-                $fetch_program = $mysqli_connect->query("SELECT * FROM tbl_users") or die(mysqli_error());
-                while ($pRpow = $fetch_program->fetch_array()) { ?>
-                  <option value='<?= $pRpow['user_id'] ?>'><?= $pRpow['first_name'] . " " . $pRpow['middle_name'] . " " . $pRpow['last_name'] ?></option>";
-                <?php }  ?>
+                
               </select>
             </div>
             <button type="submit" id="btn_assign_entry" class="btn btn-primary">Add</button>
@@ -28,7 +34,7 @@
     </div>
     <div class="col-md-9 grid-margin stretch-card">
       <div class="card">
-        
+
         <div class="card-body">
           <p class="card-description">
             List of Assignee
@@ -61,6 +67,20 @@
     $('.js-example-basic-multiple').select2();
     getEntryAssigned();
   });
+
+  function getAssignee() {
+    var user_category = $("#user_cat").val();
+    $.ajax({
+      type: "POST",
+      url: "ajax/getUsersByCategory.php",
+      data: {
+        user_category: user_category
+      },
+      success: function(data) {
+        $("#user_id").html(data);
+      }
+    });
+  }
 
   function deleteAssign(id) {
 
@@ -124,8 +144,8 @@
       "columns": [{
           "mRender": function(data, type, row) {
             const user_category = $("#user_category").val();
-            const cat_status = user_category == "D" || user_category == "A" ? "" : "hidden"; 
-            return "<center><button type='button' class='btn btn-info btn-circle btn-sm' onclick='window.location = \"index.php?page=assign-task&id=" + row.assigned_task_id + "\"'><span class='mdi mdi-file-document'></span></button><button type='button' class='btn btn-danger btn-circle btn-sm' onclick='deleteAssign(" + row.assigned_task_id + ")'><span class='mdi mdi-delete'></span></button><button type='button' "+cat_status+" class='btn btn-success btn-circle btn-sm' onclick='viewGrade(" + row.assigned_task_id + ","+row.task_grades+", \"" + row.full_name + "\")'><span class='mdi mdi-counter'></span></button></center>";
+            const cat_status = user_category == "D" || user_category == "A" ? "" : "hidden";
+            return "<center><button type='button' class='btn btn-info btn-circle btn-sm' onclick='window.location = \"index.php?page=assign-task&id=" + row.assigned_task_id + "\"'><span class='mdi mdi-file-document'></span></button><button type='button' class='btn btn-danger btn-circle btn-sm' onclick='deleteAssign(" + row.assigned_task_id + ")'><span class='mdi mdi-delete'></span></button><button type='button' " + cat_status + " class='btn btn-success btn-circle btn-sm' onclick='viewGrade(" + row.assigned_task_id + "," + row.task_grades + ", \"" + row.full_name + "\")'><span class='mdi mdi-counter'></span></button></center>";
 
           }
         },
@@ -149,11 +169,11 @@
 
   }
 
-  function viewGrade(id,task_grades,fullname){
+  function viewGrade(id, task_grades, fullname) {
     $("#modal_entry_grades").modal("show");
     $("#can_title").text(fullname);
     $("#assigned_task_id").val(id);
-    $("#task_grades").val(task_grades); 
+    $("#task_grades").val(task_grades);
 
   }
 

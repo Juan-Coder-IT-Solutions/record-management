@@ -37,7 +37,7 @@ if($type == "add"){
         $sql = $mysqli_connect->query("UPDATE tbl_programs SET program_name='$program_name' WHERE program_id ='$program_id'") or die(mysqli_error());
         if($sql){
             if($current_data['program_name'] != $program_name){
-                insert_logs($user_id, 'Programs', 'Updated program details: From '.$current_data['program_name'].' to '.$program_name);
+                insert_logs($user_id, 'Programs', 'Updated Program details', $current_data['program_name'],$program_name);
             }
             echo 1;
         }else{

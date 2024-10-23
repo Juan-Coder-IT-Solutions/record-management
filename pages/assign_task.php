@@ -101,7 +101,7 @@ if ($task_row['status'] == "P") {
                         Manage Files
                     </p> -->
                     <?php
-                    if ($task_row['user_id'] == $user_id OR $_SESSION['user_category'] == "D") { ?>
+                    if ($task_row['user_id'] == $user_id or $_SESSION['user_category'] == "D") { ?>
                         <div class="col-lg-12">
                             <div class="template-demo">
                                 <button type="button" <?= $row['status'] == "U" || $row['status'] == "R" ? "" : "hidden"; ?> onclick="changeStatus('C')" class="btn btn-info btn-fw">Checking</button>
@@ -117,12 +117,13 @@ if ($task_row['status'] == "P") {
                                 <table class="table align-items-center table-flush table-hover" id="dt_details">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>
+                                            <!-- <th>
                                                 <div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' class='dt_id' class='form-check-input' onchange="checkAll(this,'dt_id')"><i class='input-helper'></i></label></div>
-                                            </th>
+                                            </th> -->
                                             <th></th>
                                             <th>#</th>
                                             <th>File Name</th>
+                                            <th>Preview</th>
                                             <th>Date Added</th>
                                         </tr>
                                     </thead>
@@ -166,7 +167,43 @@ if ($task_row['status'] == "P") {
         </div>
     </div>
 </form>
+<!-- Modal for File Preview -->
+<div class="modal fade" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel">File Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
+    function openModal(filePath, type) {
+        var modalContent = document.getElementById('modalContent');
+        if (type === 'image') {
+            modalContent.innerHTML = "<img src='" + filePath + "' alt='Image Preview' style='width: 100%; height: auto;' />";
+        } else if (type === 'pdf') {
+            modalContent.innerHTML = "<iframe src='" + filePath + "' style='width: 100%; height: 400px;' frameborder='0'></iframe>";
+        } else if (type === 'audio') {
+            modalContent.innerHTML = "<audio controls style='width: 100%;'><source src='" + filePath + "' type='audio/mpeg'>Your browser does not support the audio tag.</audio>";
+        } else if (type === 'video') {
+            modalContent.innerHTML = "<video controls style='width: 100%;'><source src='" + filePath + "' type='video/mp4'>Your browser does not support the video tag.</video>";
+        }
+        // Show the modal
+        $('#fileModal').modal('show');
+    }
+
     $(document).ready(function() {
         getEntry();
         scrollToBottom();
@@ -397,11 +434,12 @@ if ($task_row['status'] == "P") {
                     assigned_task_id: assigned_task_id
                 }
             },
-            "columns": [{
-                    "mRender": function(data, type, row) {
-                        return "<div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' value=" + row.file_id + " class='dt_id form-check-input'><i class='input-helper'></i></label></div>";
-                    }
-                },
+            "columns": [
+                // {
+                //     "mRender": function(data, type, row) {
+                //         return "<div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' value=" + row.file_id + " class='dt_id form-check-input'><i class='input-helper'></i></label></div>";
+                //     }
+                // },
                 {
                     "data": "btn_download"
                 },
@@ -410,6 +448,10 @@ if ($task_row['status'] == "P") {
                 },
                 {
                     "data": "file_name"
+                },
+                {
+                    "data": "preview", // New column for file previews
+                    "orderable": false // Disable ordering for the preview column
                 },
                 {
                     "data": "date_added"

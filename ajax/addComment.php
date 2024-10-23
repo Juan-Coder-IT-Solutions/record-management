@@ -8,7 +8,7 @@ $sql = $mysqli_connect->query("INSERT INTO `tbl_comments`(`comment`, `assigned_t
 if ($sql) {
 
     $row = assigned_task_row($assigned_task_id);
-    insert_logs($user_id, 'Tasks', 'Added comment (' . taskNname($row['task_id']) . " - " . getUser($row['user_id']) . ")");
+    insert_logs($user_id, 'Tasks', 'Added Comment (' . taskNname($row['task_id']) . " - " . getUser($row['user_id']) . ")");
     echo 1;
 } else {
     echo 0;

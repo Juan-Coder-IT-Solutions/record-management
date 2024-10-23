@@ -42,32 +42,29 @@ if ($type == "add") {
         $deadline_date = str_replace("T", " ", $deadline_date);
         
 
-        $log_message = "Updated tasks details: ";
-        $updates_made = false;
-        $update_fields = [];
-
         if ($task_title !== $current_data['task_title']) {
-            $log_message .= "Task tilte changed from " . $current_data['task_title'] . " to " . $task_title . ", ";
+            $log_message = "Task title";
+            insert_logs($user_id, 'Tasks', $log_message, $current_data['task_title'], $task_title);
             $updates_made = true;
         }
         if ($task_desc !== $current_data['task_desc']) {
-            $log_message .= "Description changed from " . $current_data['task_desc'] . " to " . $task_desc . ", ";
+            $log_message = "Description";
+            insert_logs($user_id, 'Tasks', $log_message, $current_data['task_desc'], $task_desc);
             $updates_made = true;
         }
-        if ($posted_date.":00" !== $current_data['posted_date']) {
-            $log_message .= "Date posted changed from " . $current_data['posted_date'] . " to " . $posted_date . ", ";
+        if ($posted_date . ":00" !== $current_data['posted_date']) {
+            $log_message = "Date posted";
+            insert_logs($user_id, 'Tasks', $log_message, $current_data['posted_date'], $posted_date);
             $updates_made = true;
         }
-        if ($deadline_date.":00" !== $current_data['deadline_date']) {
-            $log_message .= "Deadline changed from " . $current_data['deadline_date'] . " to " . $deadline_date . ", ";
+        if ($deadline_date . ":00" !== $current_data['deadline_date']) {
+            $log_message = "Deadline";
+            insert_logs($user_id, 'Tasks', $log_message, $current_data['deadline_date'], $deadline_date);
             $updates_made = true;
         }
 
         $sql = $mysqli_connect->query("UPDATE tbl_tasks SET task_title='$task_title',task_desc='$task_desc',posted_date='$posted_date',deadline_date='$deadline_date' WHERE task_id ='$task_id'") or die(mysqli_error());
         if ($sql) {
-            if ($updates_made) {
-                insert_logs($user_id, 'Tasks', rtrim($log_message, ', '));
-            }
             echo 1;
         } else {
             echo 0;

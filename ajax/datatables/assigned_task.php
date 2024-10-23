@@ -15,6 +15,18 @@ while( $row = $fetch->fetch_array() ){
     $list['task_grades'] = $row['task_grades'];
     $list['full_name'] = getUser($row['user_id']);
     $list['encoded_by'] = getUser($row['encoded_by']);
+
+    $fetch_file = $mysqli_connect->query("SELECT * FROM tbl_assigned_task_files WHERE assigned_task_id='$row[assigned_task_id]'");
+    if($fetch_file->num_rows > 0){
+
+        $file_row = $fetch_file->fetch_assoc();
+        $file_name = $file_row['file_name'];
+    }else{
+        $file_name = "";
+    }
+    $list['file_name'] = $file_name;
+    // $list['file_type'] = $file_row['file_type'];
+
 	array_push($response['data'], $list);
 }
 

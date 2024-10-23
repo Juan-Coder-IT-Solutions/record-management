@@ -160,13 +160,13 @@ function add_notifications($user_id, $task_id, $assigned_task_id, $title)
 	return $query;
 }
 
-function insert_logs($user_id, $module, $remarks)
+function insert_logs($user_id, $module, $remarks, $from = "", $to = "")
 {
 
 	global $mysqli_connect;
 	$date = getCurrentDate();
 
-	$query = $mysqli_connect->query("INSERT INTO tbl_logs (`remarks`, `module`, `date_added`, `user_id`) VALUES ('$remarks','$module','$date','$user_id')") or die(mysqli_error());
+	$query = $mysqli_connect->query("INSERT INTO tbl_logs (`remarks`, `module`, `date_added`, `user_id`, updated_from, updated_to) VALUES ('$remarks','$module','$date','$user_id','$from', '$to')") or die(mysqli_error());
 
 	return $query;
 }
@@ -237,3 +237,39 @@ function time_ago($datetime)
 	$string = array_slice($string, 0, 1);
 	return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
+
+function getFilePreview1($filePath, $fileName) {
+    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+    // Handle image file types
+    if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
+        return "<img src='$filePath' alt='Image Preview' style='width: 200px; height: auto;' />";
+    }
+    // Handle PDF file types
+    elseif ($fileExtension === 'pdf') {
+        return "<iframe src='$filePath' style='width: 200px; height: 200px;' frameborder='0'></iframe>";
+    }
+    // Handle DOCX file types
+    elseif ($fileExtension === 'docx') {
+        $encodedFilePath = urlencode($filePath); // URL encode the file path
+        return "<iframe src='https://view.officeapps.live.com/op/embed.aspx?src=$encodedFilePath' style='width: 100%; height: 200px;' frameborder='0' onerror='this.style.display=\"none\"; alert(\"Error loading preview. Please download the file instead.\");'></iframe>";
+    }
+    // Handle audio file types
+    elseif (in_array($fileExtension, ['mp3', 'wav', 'ogg'])) {
+        return "<audio controls style='width: 200px;'><source src='$filePath' type='audio/$fileExtension'>Your browser does not support the audio tag.</audio>";
+    }
+    // Handle video file types
+    elseif (in_array($fileExtension, ['mp4', 'webm', 'ogg'])) {
+        return "<video controls style='width: 200px;'><source src='$filePath' type='video/$fileExtension'>Your browser does not support the video tag.</video>";
+    }
+    // Handle PowerPoint file types
+    elseif ($fileExtension === 'pptx') {
+        $encodedFilePath = urlencode($filePath); // URL encode the file path
+        return "<iframe src='https://view.officeapps.live.com/op/embed.aspx?src=$encodedFilePath' style='width: 200px; height: 200px;' frameborder='0' onerror='this.style.display=\"none\"; alert(\"Error loading preview. Please download the file instead.\");'></iframe>";
+    } 
+    // Default case for unsupported file types
+    else {
+        return "<span>Preview not available for this file type.</span>";
+    }
+}
+

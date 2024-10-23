@@ -12,6 +12,8 @@
                 <tr>
                   <th>#</th>
                   <th>Remarks</th>
+                  <th>From</th>
+                  <th>Updated to</th>
                   <th>Encoded By</th>
                   <th>Date</th>
                 </tr>
@@ -49,6 +51,12 @@
         },
         {
           "data": "remarks"
+        },
+        {
+          "data": "updated_from"
+        },
+        {
+          "data": "updated_to"
         },
         {
           "data": "encoded_by"
