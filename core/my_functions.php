@@ -10,35 +10,28 @@ function getCurrentDate()
 	return $system_date;
 }
 
-function calculateUploadPercentage($task_id) {
-    global $mysqli_connect;
+function calculateUploadPercentage($task_id)
+{
+	global $mysqli_connect;
 
-    // Query to count total number of users assigned to the task
-    $total_users_query = "
+	// Query to count total number of users assigned to the task
+	$total_users_query = "
         SELECT COUNT(*) AS total_users
         FROM tbl_assigned_tasks
         WHERE task_id = $task_id
     ";
-    $total_users_result = $mysqli_connect->query($total_users_query);
-    $total_users = $total_users_result->fetch_assoc()['total_users'];
+	$total_users_result = $mysqli_connect->query($total_users_query);
+	$total_users = $total_users_result->fetch_assoc()['total_users'];
 
-    // Query to count the number of users who have uploaded their task
-    $uploaded_users_query = "
-        SELECT COUNT(DISTINCT assigned_task_id) AS uploaded_users
-        FROM tbl_assigned_task_files
-        WHERE assigned_task_id IN (
-            SELECT assigned_task_id
-            FROM tbl_assigned_tasks
-            WHERE task_id = $task_id
-        )
-    ";
-    $uploaded_users_result = $mysqli_connect->query($uploaded_users_query);
-    $uploaded_users = $uploaded_users_result->fetch_assoc()['uploaded_users'];
+	// Query to count the number of users who have uploaded their task
+	$uploaded_users_query = "SELECT COUNT(DISTINCT assigned_task_id) AS uploaded_users FROM tbl_assigned_task_files WHERE assigned_task_id IN (SELECT assigned_task_id FROM tbl_assigned_tasks WHERE task_id = $task_id  AND status='A')";
+	$uploaded_users_result = $mysqli_connect->query($uploaded_users_query);
+	$uploaded_users = $uploaded_users_result->fetch_assoc()['uploaded_users'];
 
-    // Calculate the upload percentage
-    $upload_percentage = ($total_users > 0) ? ($uploaded_users / $total_users) * 100 : 0;
+	// Calculate the upload percentage
+	$upload_percentage = ($total_users > 0) ? ($uploaded_users / $total_users) * 100 : 0;
 
-    return $upload_percentage;
+	return $upload_percentage > 0 ? $upload_percentage : 0;
 }
 
 function getUser($user_id)
@@ -192,10 +185,10 @@ function taskChecker()
 	$query = $mysqli_connect->query("UPDATE tbl_tasks SET status = CASE WHEN posted_date <= '$date_now' AND deadline_date > '$date_now' THEN 'O' WHEN posted_date > '$date_now' THEN 'P' WHEN posted_date < '$date_now' AND  deadline_date <= '$date_now' THEN 'F' END");
 
 	$fetch =  $mysqli_connect->query("SELECT  a.* FROM tbl_assigned_tasks a LEFT JOIN tbl_assigned_task_files f ON a.assigned_task_id = f.assigned_task_id  WHERE a.task_status = 'F' AND a.notification_status=0 AND f.assigned_task_id IS NULL");
-	while($row = $fetch->fetch_array()){
+	while ($row = $fetch->fetch_array()) {
 		$update = $mysqli_connect->query("INSERT INTO `tbl_notifications`(`user_id`, `task_id`, `assigned_task_id`, `title`, `status`) VALUES ('$row[user_id]','$row[task_id]','$row[assigned_task_id]','Task Overdue',1)");
 
-		if($update){
+		if ($update) {
 			$mysqli_connect->query("UPDATE `tbl_assigned_tasks` SET notification_status=1 WHERE assigned_task_id='$row[assigned_task_id]'");
 		}
 	}
@@ -238,38 +231,82 @@ function time_ago($datetime)
 	return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
-function getFilePreview1($filePath, $fileName) {
-    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+function getFilePreview($filePath, $fileName)
+{
+	$fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    // Handle image file types
-    if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
-        return "<img src='$filePath' alt='Image Preview' style='width: 200px; height: auto;' />";
-    }
-    // Handle PDF file types
-    elseif ($fileExtension === 'pdf') {
-        return "<iframe src='$filePath' style='width: 200px; height: 200px;' frameborder='0'></iframe>";
-    }
-    // Handle DOCX file types
-    elseif ($fileExtension === 'docx') {
-        $encodedFilePath = urlencode($filePath); // URL encode the file path
-        return "<iframe src='https://view.officeapps.live.com/op/embed.aspx?src=$encodedFilePath' style='width: 100%; height: 200px;' frameborder='0' onerror='this.style.display=\"none\"; alert(\"Error loading preview. Please download the file instead.\");'></iframe>";
-    }
-    // Handle audio file types
-    elseif (in_array($fileExtension, ['mp3', 'wav', 'ogg'])) {
-        return "<audio controls style='width: 200px;'><source src='$filePath' type='audio/$fileExtension'>Your browser does not support the audio tag.</audio>";
-    }
-    // Handle video file types
-    elseif (in_array($fileExtension, ['mp4', 'webm', 'ogg'])) {
-        return "<video controls style='width: 200px;'><source src='$filePath' type='video/$fileExtension'>Your browser does not support the video tag.</video>";
-    }
-    // Handle PowerPoint file types
-    elseif ($fileExtension === 'pptx') {
-        $encodedFilePath = urlencode($filePath); // URL encode the file path
-        return "<iframe src='https://view.officeapps.live.com/op/embed.aspx?src=$encodedFilePath' style='width: 200px; height: 200px;' frameborder='0' onerror='this.style.display=\"none\"; alert(\"Error loading preview. Please download the file instead.\");'></iframe>";
-    } 
-    // Default case for unsupported file types
-    else {
-        return "<span>Preview not available for this file type.</span>";
-    }
+	// Base structure for the card
+	$card = "<div class='card mb-3' style='width: 250px; border: 1px solid #ccc; border-radius: 5px; overflow: hidden;display: flex; flex-direction: column; align-items: center; justify-content: center;'>
+                <div class='card-body' style='padding: 10px;'>";
+
+	// Handle image file types
+	if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
+		$card .= "
+        <div style='cursor:pointer;'>
+            <div onclick='openModal(\"$filePath\", \"image\")'>
+                <img src='$filePath' alt='Image Preview' class='card-img-top' style='height: 100%; width: auto; max-height: 150px; object-fit: cover;' />
+            </div>";
+	}
+	// Handle PDF file types
+	elseif ($fileExtension === 'pdf') {
+		$card .= "
+        <div style='cursor:pointer;'>
+            <div onclick='openModal(\"$filePath\", \"pdf\")'>
+                <iframe src='$filePath' style='width: 100%; height: 150px;' frameborder='0'></iframe>
+            </div>
+        </div>";
+	}
+	// Handle DOCX file types
+	elseif ($fileExtension === 'docx') {
+		$card .= "
+        <p>No preview available for DOCX.</p>";
+	}
+	// Handle PPTX file types
+	elseif ($fileExtension === 'pptx') {
+		$card .= "
+        <p>No preview available for PPTX.</p>";
+	}
+	// Handle audio file types
+	elseif (in_array($fileExtension, ['mp3', 'wav', 'ogg'])) {
+		$card .= "
+        <div style='cursor:pointer;'>
+            <div onclick='openModal(\"$filePath\", \"audio\")'>
+                <audio controls style='width: 100%;'>
+                    <source src='$filePath' type='audio/$fileExtension'>Your browser does not support the audio tag.
+                </audio>
+            </div>
+        </div>";
+	}
+	// Handle video file types
+	elseif (in_array($fileExtension, ['mp4', 'webm', 'ogg'])) {
+		$card .= "
+        <div style='cursor:pointer;'>
+            <div onclick='openModal(\"$filePath\", \"video\")'>
+                <video controls style='width: 100%;'>
+                    <source src='$filePath' type='video/$fileExtension'>Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>";
+	}
+	// Default case for unsupported file types
+	else {
+		$card .= "<span>Preview not available for this file type.</span>";
+	}
+
+	// Add View and Download buttons with inline styles
+	$card .= "<div class='mt-2'>
+    <center>
+                <button onclick=\"window.open('$filePath', '_blank');\" 
+                        style='background-color: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;'>
+                    View
+                </button>
+                <a href='$filePath' download 
+                   style='background-color: #6c757d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-left: 5px; display: inline-block; text-decoration: none;'>
+                    Download
+                </a>
+              </div>
+              </div></center>
+            </div>"; // End of card
+
+	return $card;
 }
-

@@ -97,7 +97,14 @@
               <span class="menu-title">Task</span>
             </a>
           </li>
-        <?php } else { ?>
+        <?php }else if($_SESSION['user_category'] == "P"){ ?>
+          <li class="nav-item <?= ($page == "chair-task" ? "active" : "") ?>">
+            <a href="index.php?page=chair-task" class="nav-link">
+              <i class="mdi mdi-chart-gantt menu-icon"></i>
+              <span class="menu-title">Tasks</span>
+            </a>
+          </li>
+       <?php } else { ?>
           <li class="nav-item <?= ($page == "tasks" ? "active" : "") ?>">
             <a href="index.php?page=tasks" class="nav-link">
               <i class="mdi mdi-chart-gantt menu-icon"></i>
@@ -105,6 +112,7 @@
             </a>
           </li>
         <?php } ?>
+        
         <?php if ($_SESSION['user_category'] == "D") { ?>
         <li class="nav-item <?= ($page == "users" ? "active" : "") ?>">
           <a href="index.php?page=users" class="nav-link">

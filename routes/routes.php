@@ -25,6 +25,8 @@
 		require view.'users_report.php';
 	}else if($page == 'evaluation-report'){
 		require view.'evaluation_report.php';
+	}else if($page == 'chair-task'){
+		require view.'chair_task.php';
 	}else{
 		if(!empty($page) or $page != $page){
 			require view.'error.php';

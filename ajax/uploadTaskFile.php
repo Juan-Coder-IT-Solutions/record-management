@@ -22,7 +22,7 @@ if (move_uploaded_file($file_loc, $folder . $task_file)) {
     $sql = $mysqli_connect->query("INSERT INTO `tbl_assigned_task_files` SET `file_name`='$task_file', assigned_task_id ='$assigned_task_id', date_added='$date'");
     if ($sql) {
 
-        $mysqli_connect->query("UPDATE tbl_assigned_tasks SET status='U' WHERE assigned_task_id ='$assigned_task_id' AND status = ''") or die(mysqli_error());
+        $mysqli_connect->query("UPDATE tbl_assigned_tasks SET status='U' WHERE assigned_task_id ='$assigned_task_id'") or die(mysqli_error());
 
         $title = getUser($_SESSION['rm_user_id'])." uploaded a file";
         add_notifications($user_id, $task_id, $assigned_task_id, $title);

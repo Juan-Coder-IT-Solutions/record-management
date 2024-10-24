@@ -1,14 +1,20 @@
+<?php
+$row = task_row($_GET['id']);
+
+?>
 <div class="content-wrapper">
   <div class="row">
     <div class="col-md-3 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title"><?= taskNname($_GET['id']) ?></h4>
+          <h4 class="card-title"><?= $row['task_title'] ?></h4>
+          <p><?= $row['task_desc'] ?></p>
+          <hr style="border: 1px dashed #B3E5FC;">
           <input type="hidden" value="<?= $_SESSION['user_category'] ?>" id="user_category">
           <!-- <p class="card-description">
             Manage
           </p> -->
-          <form action="" method='POST' id='frm_add_task_assign'>
+          <!-- <form action="" method='POST' id='frm_add_task_assign'>
             <input type="hidden" value="<?= $_GET['id'] ?>" name="task_id" id="task_id_assign">
             <div class="form-group">
               <label>Select Category</label>
@@ -28,7 +34,10 @@
               </select>
             </div>
             <button type="submit" id="btn_assign_entry" class="btn btn-primary">Add</button>
-          </form>
+          </form> -->
+          
+          
+          <button type="submit" onclick="assignModal()" class="btn btn-warning" style="width: 100%;"><i class="mdi mdi-account-multiple-plus"></i>&NonBreakingSpace;ASSIGN TASK</button>
         </div>
       </div>
     </div>
@@ -61,12 +70,21 @@
   </div>
 </div>
 
+<?php require_once 'modals/modal_assigning_task.php'; ?>
 <?php require_once 'modals/modal_grades.php'; ?>
 <script>
   $(document).ready(function() {
     $('.js-example-basic-multiple').select2();
     getEntryAssigned();
   });
+
+  function assignModal(){
+    $("#modal_entry_task_assign").modal("show");
+    getAssign1();
+    getAssign2();
+    getAssign3();
+    getAssign4();
+  }
 
   function getAssignee() {
     var user_category = $("#user_cat").val();

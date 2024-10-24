@@ -117,10 +117,10 @@ if ($task_row['status'] == "P") {
                                 <table class="table align-items-center table-flush table-hover" id="dt_details">
                                     <thead class="thead-light">
                                         <tr>
-                                            <!-- <th>
+                                            <th>
                                                 <div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' class='dt_id' class='form-check-input' onchange="checkAll(this,'dt_id')"><i class='input-helper'></i></label></div>
-                                            </th> -->
-                                            <th></th>
+                                            </th>
+                                            <!-- <th></th> -->
                                             <th>#</th>
                                             <th>File Name</th>
                                             <th>Preview</th>
@@ -435,14 +435,14 @@ if ($task_row['status'] == "P") {
                 }
             },
             "columns": [
-                // {
-                //     "mRender": function(data, type, row) {
-                //         return "<div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' value=" + row.file_id + " class='dt_id form-check-input'><i class='input-helper'></i></label></div>";
-                //     }
-                // },
                 {
-                    "data": "btn_download"
+                    "mRender": function(data, type, row) {
+                        return "<div class='form-check form-check-success'><label class='form-check-label'><input type='checkbox' value=" + row.file_id + " class='dt_id form-check-input'><i class='input-helper'></i></label></div>";
+                    }
                 },
+                // {
+                //     "data": "btn_download"
+                // },
                 {
                     "data": "count"
                 },
